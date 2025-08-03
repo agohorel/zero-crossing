@@ -34,6 +34,7 @@ class SketchManager {
     sketchRegistry.put("ZoomingSquares", () -> new ZoomingSquares());
     sketchRegistry.put("Ikeda", () -> new Ikeda());
     sketchRegistry.put("VectorNetwork", () -> new VectorNetwork());
+    sketchRegistry.put("WaveformGrid", () -> new WaveformGrid());
   }
 
   void loadSketch(String sketchName) {

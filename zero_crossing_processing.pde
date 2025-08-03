@@ -26,4 +26,5 @@ void keyPressed() {
   if (key == '3') sketches.loadSketch("ZoomingSquares");
   if (key == '4') sketches.loadSketch("Ikeda");
   if (key == '5') sketches.loadSketch("VectorNetwork");
+  if (key == '6') sketches.loadSketch("WaveformGrid");
 }
