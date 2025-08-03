@@ -9,7 +9,7 @@ class SketchManager {
 
   // Auto-switch config
   int globalMaxRuntimeMs = 5000; // in ms
-  float jumpSensitivity = 2.00f;  // how many stddevs above mean triggers jump
+  float jumpSensitivity = 2.50f;  // how many stddevs above mean triggers jump
   int volumeHistorySize = 10;
 
   float[] volumeHistory = new float[volumeHistorySize];
