@@ -2,6 +2,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 class SketchManager {
   Sketch currentSketch;
@@ -11,10 +13,15 @@ class SketchManager {
   int globalMaxRuntimeMs = 5000; // in ms
   float jumpSensitivity = 2.50f;  // how many stddevs above mean triggers jump
   int volumeHistorySize = 10;
+  int recentHistorySize = 3;
+  Queue<String> recentSketches = new LinkedList<>();
+
 
   float[] volumeHistory = new float[volumeHistorySize];
   int volumeHistoryIndex = 0;
   int currentSketchStartTime = 0;
+
+
 
   SketchManager() {
     sketchRegistry = new HashMap<String, Supplier<Sketch>>();
@@ -79,18 +86,39 @@ class SketchManager {
     volumeHistoryIndex = 0;
   }
 
+
+
   private void switchSketchRandomly() {
     ArrayList<String> candidates = new ArrayList<>();
     for (String key : sketchRegistry.keySet()) {
-      if (currentSketch == null || !key.equals(currentSketch.name())) {
+      // exclude current and recently played sketches
+      if (currentSketch == null ||
+        (!key.equals(currentSketch.name()) && !recentSketches.contains(key))) {
         candidates.add(key);
       }
     }
+
+    // If no candidates left after filtering, just exclude current sketch only
+    if (candidates.size() == 0) {
+      for (String key : sketchRegistry.keySet()) {
+        if (currentSketch == null || !key.equals(currentSketch.name())) {
+          candidates.add(key);
+        }
+      }
+    }
+
     if (candidates.size() == 0) return;
 
     String nextKey = candidates.get((int) random(candidates.size()));
     loadSketch(nextKey);
+
+    // Track recent sketches
+    recentSketches.add(nextKey);
+    if (recentSketches.size() > recentHistorySize) {
+      recentSketches.poll();
+    }
   }
+
 
   private boolean detectJump(float currentVolume, float[] history, int size, float sensitivity) {
     // Calculate mean
