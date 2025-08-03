@@ -2,6 +2,7 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
+  fullScreen();
   size(800, 600, P2D); // Or P3D for 3D support
 }
 
@@ -16,11 +17,10 @@ void setup() {
 void draw() {
   audio.update();
   AudioData audioData = audio.getAudioData();
-  println(audioData.spectrum);
   sketches.draw(audioData);
 }
 
 void keyPressed() {
   if (key == '1') sketches.loadSketch("A");
-  if (key == '2') sketches.loadSketch("B");
+  if (key == '2') sketches.loadSketch("tunnel");
 }
