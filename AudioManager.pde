@@ -12,17 +12,19 @@ class AudioManager {
     in = minim.getLineIn(Minim.STEREO, 1024);
     fft = new FFT(in.bufferSize(), in.sampleRate());
     audioData = new AudioData(
-      new float[in.bufferSize()],
-      new float[fft.specSize()],
+      new float[fft.specSize()], // spectrum
+      new float[in.bufferSize()], // waveform
+      new float[in.bufferSize()], // L waveform
+      new float[in.bufferSize()], // R waveform
       0
-    );
+      );
   }
 
-  AudioData getAudioData(){
+  AudioData getAudioData() {
     return audioData;
   }
 
-  void updateAudioData(){
+  void updateAudioData() {
     for (int i = 0; i < audioData.waveform.length; i++) {
       audioData.waveform[i] = in.mix.get(i);
     }
@@ -32,14 +34,17 @@ class AudioManager {
     }
 
     audioData.volume = in.mix.level();
+
+    audioData.leftWaveform = in.left.toArray();
+    audioData.rightWaveform = in.right.toArray();
   }
 
   void update() {
     fft.forward(in.mix);
     updateAudioData();
   }
-  
-  
+
+
   float[] getWaveform() {
     float[] waveform = new float[in.bufferSize()];
     for (int i = 0; i < waveform.length; i++) {
@@ -57,10 +62,10 @@ class AudioManager {
     return spectrum;
   }
 
-  float getVolume(){
-     return in.mix.level();
+  float getVolume() {
+    return in.mix.level();
   }
-  
+
 
   void stop() {
     in.close();

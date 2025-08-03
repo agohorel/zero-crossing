@@ -10,13 +10,23 @@ class Ikeda implements Sketch {
     waveformPoints = audioData.waveform.length;
     bandWidth = float(displayWidth) / waveformPoints;
 
+    // left channel
     for (int i = 0; i < waveformPoints; i++) {
       float x = i * bandWidth;
-      float amp = audioData.waveform[i];
+      float amp = audioData.leftWaveform[i];
       float brightness = map(amp, 0, 1, 0, 255);
 
       stroke(brightness);
-      line(x, 0, x, height);
+      line(x, 0, x, height * 0.5);
+    }
+
+    for (int i = 0; i < waveformPoints; i++) {
+      float x = i * bandWidth;
+      float amp = audioData.rightWaveform[i];
+      float brightness = map(amp, 0, 1, 0, 255);
+
+      stroke(brightness);
+      line(x, height * 0.5, x, height);
     }
   }
 
