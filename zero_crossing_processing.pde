@@ -24,4 +24,5 @@ void keyPressed() {
   if (key == '1') sketches.loadSketch("Tunnel");
   if (key == '2') sketches.loadSketch("FallingCircles");
   if (key == '3') sketches.loadSketch("ZoomingSquares");
+  if (key == '4') sketches.loadSketch("Ikeda");
 }

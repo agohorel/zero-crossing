@@ -15,6 +15,7 @@ class SketchManager {
     sketchRegistry.put("Tunnel", () -> new Tunnel());
     sketchRegistry.put("FallingCircles", () -> new FallingCircles());
     sketchRegistry.put("ZoomingSquares", () -> new ZoomingSquares());
+    sketchRegistry.put("Ikeda", () -> new Ikeda());
   }
 
   void loadSketch(String sketchName) {
