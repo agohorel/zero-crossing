@@ -16,7 +16,7 @@ class FallingCircles implements Sketch {
     background(0);  // disable this for trails
 
     for (Circle c : circles) {
-      c.update();
+      c.update(audioData);
     }
   }
 
@@ -44,7 +44,7 @@ class Circle {
     this.noiseSpeed = random(0.002, 0.01);
   }
 
-  void update() {
+  void update(AudioData audioData) {
     boundsCheck();
 
     float noiseX = noise(noiseOffsetX + frameCount * noiseSpeed);
@@ -57,7 +57,7 @@ class Circle {
     float verticalVariation = map(noiseY, 0, 1, -0.3, 0.3);
     y += fallingSpeed + verticalVariation;
 
-    fill(255, map(noiseX, 0, 1, 50, 255));
+    fill(255, map(noiseX, 0, 1, 50, 255) * (0.5 + audioData.volume));
     ellipse(x, y, radius, radius);
   }
 

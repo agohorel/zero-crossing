@@ -2,8 +2,8 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
-  fullScreen();
-  size(800, 600, P2D); // Or P3D for 3D support
+  // fullScreen();
+  size(displayWidth, displayHeight, P2D); // Or P3D for 3D support
 }
 
 void setup() {
