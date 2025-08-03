@@ -9,7 +9,7 @@ class SketchManager {
 
   // Auto-switch config
   int globalMaxRuntimeMs = 5000; // in ms
-  float jumpThreshold = 0.25f;    // volume delta threshold
+  float jumpSensitivity = 2.00f;  // how many stddevs above mean triggers jump
   int volumeHistorySize = 10;
 
   float[] volumeHistory = new float[volumeHistorySize];
@@ -65,12 +65,8 @@ class SketchManager {
     }
 
     if (elapsed > maxRuntime) {
-      int compareIndex = (volumeHistoryIndex + 1) % volumeHistorySize;
-      float oldVolume = volumeHistory[compareIndex];
       float currentVolume = audioData.volume;
-      float delta = currentVolume - oldVolume;
-
-      if (delta > jumpThreshold) {
+      if (detectJump(currentVolume, volumeHistory, volumeHistorySize, jumpSensitivity)) {
         switchSketchRandomly();
       }
     }
@@ -94,6 +90,26 @@ class SketchManager {
 
     String nextKey = candidates.get((int) random(candidates.size()));
     loadSketch(nextKey);
+  }
+
+  private boolean detectJump(float currentVolume, float[] history, int size, float sensitivity) {
+    // Calculate mean
+    float sum = 0;
+    for (int i = 0; i < size; i++) {
+      sum += history[i];
+    }
+    float mean = sum / size;
+
+    // Calculate std deviation
+    float varianceSum = 0;
+    for (int i = 0; i < size; i++) {
+      float diff = history[i] - mean;
+      varianceSum += diff * diff;
+    }
+    float stddev = sqrt(varianceSum / size);
+
+    // Return true if currentVolume is greater than mean + sensitivity * stddev
+    return currentVolume > mean + sensitivity * stddev;
   }
 }
 
