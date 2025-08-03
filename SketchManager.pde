@@ -10,7 +10,7 @@ class SketchManager {
   Map<String, Supplier<Sketch>> sketchRegistry;
 
   // Auto-switch config
-  int globalMaxRuntimeMs = 5000; // in ms
+  int globalMaxRuntimeMs = 10000; // in ms
   float jumpSensitivity = 2.50f;  // how many stddevs above mean triggers jump
   int volumeHistorySize = 10;
   int recentHistorySize = 3;
