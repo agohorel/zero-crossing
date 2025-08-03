@@ -12,8 +12,8 @@ class SketchManager {
   }
 
   void registerSketches() {
-    sketchRegistry.put("A", () -> new SketchA());
-    sketchRegistry.put("tunnel", () -> new Tunnel());
+    sketchRegistry.put("Tunnel", () -> new Tunnel());
+    sketchRegistry.put("FallingCircles", () -> new FallingCircles());
   }
 
   void loadSketch(String sketchName) {

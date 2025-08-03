@@ -11,7 +11,7 @@ void setup() {
   audio.setup(this);
 
   sketches = new SketchManager();
-  sketches.loadSketch("A");
+  sketches.loadSketch("Tunnel");
 }
 
 void draw() {
@@ -21,6 +21,6 @@ void draw() {
 }
 
 void keyPressed() {
-  if (key == '1') sketches.loadSketch("A");
-  if (key == '2') sketches.loadSketch("tunnel");
+  if (key == '1') sketches.loadSketch("Tunnel");
+  if (key == '2') sketches.loadSketch("FallingCircles");
 }
