@@ -11,7 +11,7 @@ void setup() {
   audio.setup(this);
 
   sketches = new SketchManager();
-  sketches.loadSketch("Tunnel");
+  sketches.activateSketch("Tunnel");
 }
 
 void draw() {
@@ -21,10 +21,10 @@ void draw() {
 }
 
 void keyPressed() {
-  if (key == '1') sketches.loadSketch("Tunnel");
-  if (key == '2') sketches.loadSketch("FallingCircles");
-  if (key == '3') sketches.loadSketch("ZoomingSquares");
-  if (key == '4') sketches.loadSketch("Ikeda");
-  if (key == '5') sketches.loadSketch("VectorNetwork");
-  if (key == '6') sketches.loadSketch("WaveformGrid");
+  if (key == '1') sketches.activateSketch("Tunnel");
+  if (key == '2') sketches.activateSketch("FallingCircles");
+  if (key == '3') sketches.activateSketch("ZoomingSquares");
+  if (key == '4') sketches.activateSketch("Ikeda");
+  if (key == '5') sketches.activateSketch("VectorNetwork");
+  if (key == '6') sketches.activateSketch("WaveformGrid");
 }

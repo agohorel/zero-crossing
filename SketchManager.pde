@@ -1,41 +1,38 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 class SketchManager {
-  Sketch currentSketch;
-  Map<String, Supplier<Sketch>> sketchRegistry;
+  private Sketch currentSketch;
+  private final Map<String, Supplier<Sketch>> sketchRegistry;
 
-  // Auto-switch config - see sketch interface for global max runtime
-  float jumpSensitivity = 2.5f;
-  int volumeHistorySize = 10;
-  int recentHistorySize = 3;
-  Queue<String> recentSketches = new LinkedList<>();
+  // Auto-switch config
+  private static final int VOLUME_HISTORY_SIZE = 10;
+  private static final int RECENT_HISTORY_SIZE = 3;
+  private float jumpSensitivity = 2.5f;
 
-  float[] volumeHistory = new float[volumeHistorySize];
-  float[] deltaHistory = new float[volumeHistorySize];
-  int volumeHistoryIndex = 0;
-  int deltaHistoryIndex = 0;
-  int currentSketchStartTime = 0;
+  private final Queue<String> recentSketches = new LinkedList<>();
+  private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
+  private final float[] deltaHistory = new float[VOLUME_HISTORY_SIZE];
+  private int volumeHistoryIndex = 0;
+  private int deltaHistoryIndex = 0;
+  private int currentSketchStartTime = 0;
+
 
   SketchManager() {
     sketchRegistry = new HashMap<>();
     registerSketches();
   }
 
-  void registerSketches() {
-    sketchRegistry.put("Tunnel", () -> new Tunnel());
-    sketchRegistry.put("FallingCircles", () -> new FallingCircles());
-    sketchRegistry.put("ZoomingSquares", () -> new ZoomingSquares());
-    sketchRegistry.put("Ikeda", () -> new Ikeda());
-    sketchRegistry.put("VectorNetwork", () -> new VectorNetwork());
-    sketchRegistry.put("WaveformGrid", () -> new WaveformGrid());
+  private void registerSketches() {
+    sketchRegistry.put("Tunnel", Tunnel::new);
+    sketchRegistry.put("FallingCircles", FallingCircles::new);
+    sketchRegistry.put("ZoomingSquares", ZoomingSquares::new);
+    sketchRegistry.put("Ikeda", Ikeda::new);
+    sketchRegistry.put("VectorNetwork", VectorNetwork::new);
+    sketchRegistry.put("WaveformGrid", WaveformGrid::new);
   }
 
-  void loadSketch(String sketchName) {
+  void activateSketch(String sketchName) {
     if (currentSketch != null) {
       currentSketch.cleanup();
     }
@@ -58,27 +55,24 @@ class SketchManager {
     currentSketch.draw(audioData);
 
     // Track volume history + delta
-    float prevVolume = volumeHistory[(volumeHistoryIndex - 1 + volumeHistorySize) % volumeHistorySize];
+    float prevVolume = volumeHistory[(volumeHistoryIndex - 1 + VOLUME_HISTORY_SIZE) % VOLUME_HISTORY_SIZE];
     float delta = audioData.volume - prevVolume;
     deltaHistory[deltaHistoryIndex] = delta;
-    deltaHistoryIndex = (deltaHistoryIndex + 1) % volumeHistorySize;
+    deltaHistoryIndex = (deltaHistoryIndex + 1) % VOLUME_HISTORY_SIZE;
 
     volumeHistory[volumeHistoryIndex] = audioData.volume;
-    volumeHistoryIndex = (volumeHistoryIndex + 1) % volumeHistorySize;
+    volumeHistoryIndex = (volumeHistoryIndex + 1) % VOLUME_HISTORY_SIZE;
 
     int elapsed = millis() - currentSketchStartTime;
     int maxRuntime = currentSketch.getMaxRuntime();
 
     if (elapsed > maxRuntime &&
-      detectJump(audioData.volume, volumeHistory, volumeHistorySize, jumpSensitivity)) {
+      detectJump(audioData.volume, volumeHistory, jumpSensitivity)) {
 
       float avgDelta = getAverageDelta();
-
       Intensity currentIntensity = currentSketch.getIntensity();
-
       Intensity targetIntensity = currentIntensity;
 
-      // ramp intensity up or down depending on avg. delta and current intensity
       if (avgDelta > 0.01f) {
         if (currentIntensity == Intensity.LOW) targetIntensity = Intensity.MID;
         else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.HIGH;
@@ -91,68 +85,68 @@ class SketchManager {
     }
   }
 
-  private float getAverageDelta() {
-    float sum = 0;
-    for (float d : deltaHistory) sum += d;
-    return sum / volumeHistorySize;
-  }
-
-  private void clearVolumeHistory() {
-    for (int i = 0; i < volumeHistorySize; i++) {
-      volumeHistory[i] = 0;
-      deltaHistory[i] = 0;
-    }
-    volumeHistoryIndex = 0;
-    deltaHistoryIndex = 0;
-  }
-
   private void switchSketchWithTargetIntensity(Intensity target) {
-    ArrayList<String> candidates = new ArrayList<>();
+    List<String> candidates = new ArrayList<>();
 
-    for (String key : sketchRegistry.keySet()) {
-      if (currentSketch != null &&
-        (key.equals(currentSketch.name()) || recentSketches.contains(key))) continue;
+    for (Map.Entry<String, Supplier<Sketch>> entry : sketchRegistry.entrySet()) {
+      String key = entry.getKey();
+      if (isSketchRecentOrCurrent(key)) continue;
 
-      Supplier<Sketch> constructor = sketchRegistry.get(key);
-      Sketch sketch = constructor.get();
-
-      Intensity intensity = sketch.getIntensity();
-
-      if (intensity == target) {
+      Sketch sketch = entry.getValue().get();
+      if (sketch.getIntensity() == target) {
         candidates.add(key);
       }
     }
 
     // Fallback to any non-recent sketch
-    if (candidates.size() == 0) {
+    if (candidates.isEmpty()) {
       for (String key : sketchRegistry.keySet()) {
-        if (currentSketch == null || !key.equals(currentSketch.name())) {
+        if (!isSketchRecentOrCurrent(key)) {
           candidates.add(key);
         }
       }
     }
 
-    if (candidates.size() == 0) return;
+    if (candidates.isEmpty()) return;
 
-    String nextKey = candidates.get((int) random(candidates.size()));
-    loadSketch(nextKey);
+    Collections.shuffle(candidates);
+    String nextKey = candidates.get(0);
+    activateSketch(nextKey);
 
     recentSketches.add(nextKey);
-    if (recentSketches.size() > recentHistorySize) recentSketches.poll();
+    if (recentSketches.size() > RECENT_HISTORY_SIZE) recentSketches.poll();
   }
 
-  private boolean detectJump(float currentVolume, float[] history, int size, float sensitivity) {
+  private boolean detectJump(float currentVolume, float[] history, float sensitivity) {
     float sum = 0;
-    for (int i = 0; i < size; i++) sum += history[i];
-    float mean = sum / size;
+    for (float v : history) sum += v;
+    float mean = sum / history.length;
 
     float varianceSum = 0;
-    for (int i = 0; i < size; i++) {
-      float diff = history[i] - mean;
+    for (float v : history) {
+      float diff = v - mean;
       varianceSum += diff * diff;
     }
-    float stddev = sqrt(varianceSum / size);
 
+    float stddev = sqrt(varianceSum / history.length);
     return currentVolume > mean + sensitivity * stddev;
+  }
+
+  private float getAverageDelta() {
+    float sum = 0;
+    for (float d : deltaHistory) sum += d;
+    return sum / VOLUME_HISTORY_SIZE;
+  }
+
+  private void clearVolumeHistory() {
+    Arrays.fill(volumeHistory, 0);
+    Arrays.fill(deltaHistory, 0);
+    volumeHistoryIndex = 0;
+    deltaHistoryIndex = 0;
+  }
+
+  private boolean isSketchRecentOrCurrent(String name) {
+    return currentSketch != null &&
+      (name.equals(currentSketch.name()) || recentSketches.contains(name));
   }
 }
