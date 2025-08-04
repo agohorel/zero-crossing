@@ -10,7 +10,7 @@ interface Sketch {
 
   // sketches can optionally declare max runtimes
   default int getMaxRuntime() {
-    return 10000;
+    return 3000;
   }
 
   // sketches can optionally declare their intensity for auto-switching
