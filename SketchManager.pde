@@ -9,22 +9,20 @@ class SketchManager {
   Sketch currentSketch;
   Map<String, Supplier<Sketch>> sketchRegistry;
 
-  // Auto-switch config
-  int globalMaxRuntimeMs = 10000; // in ms
-  float jumpSensitivity = 2.50f;  // how many stddevs above mean triggers jump
+  // Auto-switch config - see sketch interface for global max runtime
+  float jumpSensitivity = 2.5f;
   int volumeHistorySize = 10;
   int recentHistorySize = 3;
   Queue<String> recentSketches = new LinkedList<>();
 
-
   float[] volumeHistory = new float[volumeHistorySize];
+  float[] deltaHistory = new float[volumeHistorySize];
   int volumeHistoryIndex = 0;
+  int deltaHistoryIndex = 0;
   int currentSketchStartTime = 0;
 
-
-
   SketchManager() {
-    sketchRegistry = new HashMap<String, Supplier<Sketch>>();
+    sketchRegistry = new HashMap<>();
     registerSketches();
   }
 
@@ -59,47 +57,73 @@ class SketchManager {
 
     currentSketch.draw(audioData);
 
-    // Track volume history
+    // Track volume history + delta
+    float prevVolume = volumeHistory[(volumeHistoryIndex - 1 + volumeHistorySize) % volumeHistorySize];
+    float delta = audioData.volume - prevVolume;
+    deltaHistory[deltaHistoryIndex] = delta;
+    deltaHistoryIndex = (deltaHistoryIndex + 1) % volumeHistorySize;
+
     volumeHistory[volumeHistoryIndex] = audioData.volume;
     volumeHistoryIndex = (volumeHistoryIndex + 1) % volumeHistorySize;
 
     int elapsed = millis() - currentSketchStartTime;
-    int maxRuntime = globalMaxRuntimeMs;
+    int maxRuntime = currentSketch.getMaxRuntime();
 
-    // Check for per-sketch override
-    if (currentSketch instanceof HasMaxRuntime) {
-      int overrideMs = ((HasMaxRuntime) currentSketch).maxRuntimeMs();
-      if (overrideMs > 0) maxRuntime = overrideMs;
-    }
+    if (elapsed > maxRuntime &&
+      detectJump(audioData.volume, volumeHistory, volumeHistorySize, jumpSensitivity)) {
 
-    if (elapsed > maxRuntime) {
-      float currentVolume = audioData.volume;
-      if (detectJump(currentVolume, volumeHistory, volumeHistorySize, jumpSensitivity)) {
-        switchSketchRandomly();
+      float avgDelta = getAverageDelta();
+
+      Intensity currentIntensity = currentSketch.getIntensity();
+
+      Intensity targetIntensity = currentIntensity;
+
+      // ramp intensity up or down depending on avg. delta and current intensity
+      if (avgDelta > 0.01f) {
+        if (currentIntensity == Intensity.LOW) targetIntensity = Intensity.MID;
+        else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.HIGH;
+      } else if (avgDelta < -0.01f) {
+        if (currentIntensity == Intensity.HIGH) targetIntensity = Intensity.MID;
+        else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.LOW;
       }
+
+      switchSketchWithTargetIntensity(targetIntensity);
     }
+  }
+
+  private float getAverageDelta() {
+    float sum = 0;
+    for (float d : deltaHistory) sum += d;
+    return sum / volumeHistorySize;
   }
 
   private void clearVolumeHistory() {
     for (int i = 0; i < volumeHistorySize; i++) {
       volumeHistory[i] = 0;
+      deltaHistory[i] = 0;
     }
     volumeHistoryIndex = 0;
+    deltaHistoryIndex = 0;
   }
 
-
-
-  private void switchSketchRandomly() {
+  private void switchSketchWithTargetIntensity(Intensity target) {
     ArrayList<String> candidates = new ArrayList<>();
+
     for (String key : sketchRegistry.keySet()) {
-      // exclude current and recently played sketches
-      if (currentSketch == null ||
-        (!key.equals(currentSketch.name()) && !recentSketches.contains(key))) {
+      if (currentSketch != null &&
+        (key.equals(currentSketch.name()) || recentSketches.contains(key))) continue;
+
+      Supplier<Sketch> constructor = sketchRegistry.get(key);
+      Sketch sketch = constructor.get();
+
+      Intensity intensity = sketch.getIntensity();
+
+      if (intensity == target) {
         candidates.add(key);
       }
     }
 
-    // If no candidates left after filtering, just exclude current sketch only
+    // Fallback to any non-recent sketch
     if (candidates.size() == 0) {
       for (String key : sketchRegistry.keySet()) {
         if (currentSketch == null || !key.equals(currentSketch.name())) {
@@ -113,23 +137,15 @@ class SketchManager {
     String nextKey = candidates.get((int) random(candidates.size()));
     loadSketch(nextKey);
 
-    // Track recent sketches
     recentSketches.add(nextKey);
-    if (recentSketches.size() > recentHistorySize) {
-      recentSketches.poll();
-    }
+    if (recentSketches.size() > recentHistorySize) recentSketches.poll();
   }
 
-
   private boolean detectJump(float currentVolume, float[] history, int size, float sensitivity) {
-    // Calculate mean
     float sum = 0;
-    for (int i = 0; i < size; i++) {
-      sum += history[i];
-    }
+    for (int i = 0; i < size; i++) sum += history[i];
     float mean = sum / size;
 
-    // Calculate std deviation
     float varianceSum = 0;
     for (int i = 0; i < size; i++) {
       float diff = history[i] - mean;
@@ -137,12 +153,6 @@ class SketchManager {
     }
     float stddev = sqrt(varianceSum / size);
 
-    // Return true if currentVolume is greater than mean + sensitivity * stddev
     return currentVolume > mean + sensitivity * stddev;
   }
-}
-
-// Optional interface for per-sketch max runtime override
-interface HasMaxRuntime {
-  int maxRuntimeMs();
 }
