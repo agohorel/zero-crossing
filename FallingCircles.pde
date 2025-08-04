@@ -2,6 +2,12 @@ final int NUM_CIRCLES = 750;
 Circle[] circles;
 
 class FallingCircles implements Sketch {
+  @Override
+    public Intensity getIntensity() {
+    return Intensity.LOW;
+  }
+
+
   void setup() {
     size(displayWidth, displayHeight);  // similar to windowWidth/Height
     noStroke();

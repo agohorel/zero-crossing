@@ -1,4 +1,9 @@
 class SomeSketch implements Sketch {
+  @Override
+    public Intensity getIntensity() {
+    return Intensity.MID;
+  }
+
   void setup() {
   }
 

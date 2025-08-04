@@ -13,6 +13,13 @@ float cellSize;
 PGraphics buffer;
 
 class ZoomingSquares implements Sketch {
+  @Override
+    public Intensity getIntensity() {
+    return Intensity.MID;
+  }
+
+
+
   void setup() {
     size(displayWidth, displayHeight, P2D);
     buffer = createGraphics(width, height, P2D);
