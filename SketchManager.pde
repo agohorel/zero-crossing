@@ -7,7 +7,7 @@ class SketchManager {
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
-  private static final int RECENT_HISTORY_SIZE = 3;
+  private static final int RECENT_HISTORY_SIZE = 2;
   private float jumpSensitivity = 2.5f;
   // threshold for delta in avg vol history over n frames (see above) - think %
   private float upwardsSensitivity = 0.0125f;
@@ -77,8 +77,6 @@ class SketchManager {
       Intensity currentIntensity = currentSketch.getIntensity();
       Intensity targetIntensity = currentIntensity;
 
-      println(avgDelta);
-
       if (avgDelta > upwardsSensitivity) {
         if (currentIntensity == Intensity.LOW) targetIntensity = Intensity.MID;
         else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.HIGH;
@@ -87,6 +85,7 @@ class SketchManager {
         else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.LOW;
       }
 
+      // println("current", currentSketch.name(), currentSketch.getIntensity(), "target", targetIntensity);
       switchSketchWithTargetIntensity(targetIntensity);
     }
   }
