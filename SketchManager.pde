@@ -129,8 +129,11 @@ class SketchManager {
     }
 
     float stddev = sqrt(varianceSum / history.length);
-    return currentVolume > mean + sensitivity * stddev;
+
+    // Consider BOTH upward and downward deviation
+    return abs(currentVolume - mean) > sensitivity * stddev;
   }
+
 
   private float getAverageDelta() {
     float sum = 0;
