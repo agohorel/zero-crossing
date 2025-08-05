@@ -9,6 +9,7 @@ int ROWS = NUM_ROWS;
 float gridGap = INITIAL_GRID_GAP;
 float cellPadding = INITIAL_CELL_PADDING;
 float cellSize;
+float volSum = 0;
 
 PGraphics buffer;
 
@@ -28,6 +29,7 @@ class ZoomingSquares implements Sketch {
     cellPadding = oscillate(frameCount * 0.01f, INITIAL_CELL_PADDING * 0.5f, INITIAL_CELL_PADDING * 2);
     gridGap = oscillate(frameCount * 0.001f, maxGridGap * 0.5f, maxGridGap * 2);
     cellSize = getCellSize(gridGap, cellPadding);
+    volSum += audioData.volume;
 
     float gridWidth = (COLS - 1) * gridGap;
     float gridHeight = (ROWS - 1) * gridGap;
@@ -37,13 +39,16 @@ class ZoomingSquares implements Sketch {
     buffer.resetMatrix();
     buffer.translate(width / 2f - gridWidth / 2f, height / 2f - gridHeight / 2f);
 
+    buffer.noStroke();
+    buffer.fill(255, audioData.volume * 400);
+
     for (int col = 0; col < COLS; col++) {
       for (int row = 0; row < ROWS; row++) {
         buffer.pushMatrix();
         float x = col * gridGap;
         float y = row * gridGap;
         buffer.translate(x, y);
-        float angle = (col + row) * (frameCount * ((col + row) * 0.000002f));
+        float angle = (col + row) * (volSum * ((col + row) * 0.00004f));
         buffer.rotate(angle);
         buffer.rect(0, 0, cellSize, cellSize);
         buffer.popMatrix();
