@@ -31,7 +31,7 @@ class FallingCircles implements Sketch {
 
 
   String name() {
-    return "Falling Circles";
+    return "FallingCircles";
   }
 }
 class Circle {

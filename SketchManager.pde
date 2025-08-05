@@ -1,18 +1,28 @@
 import java.util.*;
 import java.util.function.Supplier;
 
+private static class SketchMeta {
+  final Supplier<Sketch> constructor;
+  final Intensity intensity;
+
+  SketchMeta(Supplier<Sketch> constructor, Intensity intensity) {
+    this.constructor = constructor;
+    this.intensity = intensity;
+  }
+}
+
 class SketchManager {
+
   private Sketch currentSketch;
-  private final Map<String, Supplier<Sketch>> sketchRegistry;
+  private String currentSketchName;
+  private final Map<String, SketchMeta> sketchRegistry;
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
   private static final int RECENT_HISTORY_SIZE = 2;
   private float jumpSensitivity = 2.5f;
-  // threshold for delta in avg vol history over n frames (see above) - think %
   private float upwardsSensitivity = 0.0125f;
   private float downwardsSensitivity = -0.02f;
-
 
   private final Queue<String> recentSketches = new LinkedList<>();
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
@@ -21,19 +31,18 @@ class SketchManager {
   private int deltaHistoryIndex = 0;
   private int currentSketchStartTime = 0;
 
-
   SketchManager() {
     sketchRegistry = new HashMap<>();
     registerSketches();
   }
 
   private void registerSketches() {
-    sketchRegistry.put("Tunnel", Tunnel::new);
-    sketchRegistry.put("FallingCircles", FallingCircles::new);
-    sketchRegistry.put("ZoomingSquares", ZoomingSquares::new);
-    sketchRegistry.put("Ikeda", Ikeda::new);
-    sketchRegistry.put("VectorNetwork", VectorNetwork::new);
-    sketchRegistry.put("WaveformGrid", WaveformGrid::new);
+    sketchRegistry.put("Tunnel", new SketchMeta(Tunnel::new, Intensity.MID));
+    sketchRegistry.put("FallingCircles", new SketchMeta(FallingCircles::new, Intensity.LOW));
+    sketchRegistry.put("ZoomingSquares", new SketchMeta(ZoomingSquares::new, Intensity.MID));
+    sketchRegistry.put("Ikeda", new SketchMeta(Ikeda::new, Intensity.HIGH));
+    sketchRegistry.put("VectorNetwork", new SketchMeta(VectorNetwork::new, Intensity.HIGH));
+    sketchRegistry.put("WaveformGrid", new SketchMeta(WaveformGrid::new, Intensity.LOW));
   }
 
   void activateSketch(String sketchName) {
@@ -41,13 +50,14 @@ class SketchManager {
       currentSketch.cleanup();
     }
 
-    Supplier<Sketch> constructor = sketchRegistry.get(sketchName);
-    if (constructor != null) {
-      currentSketch = constructor.get();
+    SketchMeta meta = sketchRegistry.get(sketchName);
+    if (meta != null) {
+      currentSketch = meta.constructor.get();
+      currentSketchName = sketchName;
       currentSketch.setup();
       currentSketchStartTime = millis();
       clearVolumeHistory();
-      println("Loaded sketch: " + currentSketch.name());
+      println("Loaded sketch: " + sketchName);
     } else {
       println("Unknown sketch: " + sketchName);
     }
@@ -74,7 +84,10 @@ class SketchManager {
       detectJump(audioData.volume, volumeHistory, jumpSensitivity)) {
 
       float avgDelta = getAverageDelta();
-      Intensity currentIntensity = currentSketch.getIntensity();
+      SketchMeta meta = sketchRegistry.get(currentSketchName);
+      if (meta == null) return; // Safety check
+
+      Intensity currentIntensity = meta.intensity;
       Intensity targetIntensity = currentIntensity;
 
       if (avgDelta > upwardsSensitivity) {
@@ -85,7 +98,6 @@ class SketchManager {
         else if (currentIntensity == Intensity.MID) targetIntensity = Intensity.LOW;
       }
 
-      // println("current", currentSketch.name(), currentSketch.getIntensity(), "target", targetIntensity);
       switchSketchWithTargetIntensity(targetIntensity);
     }
   }
@@ -93,12 +105,11 @@ class SketchManager {
   private void switchSketchWithTargetIntensity(Intensity target) {
     List<String> candidates = new ArrayList<>();
 
-    for (Map.Entry<String, Supplier<Sketch>> entry : sketchRegistry.entrySet()) {
+    for (Map.Entry<String, SketchMeta> entry : sketchRegistry.entrySet()) {
       String key = entry.getKey();
       if (isSketchRecentOrCurrent(key)) continue;
 
-      Sketch sketch = entry.getValue().get();
-      if (sketch.getIntensity() == target) {
+      if (entry.getValue().intensity == target) {
         candidates.add(key);
       }
     }
@@ -134,11 +145,8 @@ class SketchManager {
     }
 
     float stddev = sqrt(varianceSum / history.length);
-
-    // Consider BOTH upward and downward deviation
     return abs(currentVolume - mean) > sensitivity * stddev;
   }
-
 
   private float getAverageDelta() {
     float sum = 0;
@@ -154,7 +162,6 @@ class SketchManager {
   }
 
   private boolean isSketchRecentOrCurrent(String name) {
-    return currentSketch != null &&
-      (name.equals(currentSketch.name()) || recentSketches.contains(name));
+    return name.equals(currentSketchName) || recentSketches.contains(name);
   }
 }

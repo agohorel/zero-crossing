@@ -43,6 +43,6 @@ class Tunnel implements Sketch {
   }
 
   String name() {
-    return "tunnel";
+    return "Tunnel";
   }
 }
