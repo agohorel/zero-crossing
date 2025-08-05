@@ -10,14 +10,11 @@ float gridGap = INITIAL_GRID_GAP;
 float cellPadding = INITIAL_CELL_PADDING;
 float cellSize;
 
-PGraphics buffer;
-
 class ZoomingSquares implements Sketch {
 
   void setup() {
     size(displayWidth, displayHeight, P2D);
-    buffer = createGraphics(width, height, P2D);
-    buffer.rectMode(CENTER);
+    rectMode(CENTER);
   }
 
   void draw(AudioData audioData) {
@@ -32,26 +29,23 @@ class ZoomingSquares implements Sketch {
     float gridWidth = (COLS - 1) * gridGap;
     float gridHeight = (ROWS - 1) * gridGap;
 
-    buffer.beginDraw();
-    buffer.background(0);
-    buffer.resetMatrix();
-    buffer.translate(width / 2f - gridWidth / 2f, height / 2f - gridHeight / 2f);
+    background(0);
+    resetMatrix();
+    translate(width / 2f - gridWidth / 2f, height / 2f - gridHeight / 2f);
+    fill(255);
 
     for (int col = 0; col < COLS; col++) {
       for (int row = 0; row < ROWS; row++) {
-        buffer.pushMatrix();
+        pushMatrix();
         float x = col * gridGap;
         float y = row * gridGap;
-        buffer.translate(x, y);
+        translate(x, y);
         float angle = (col + row) * (frameCount * ((col + row) * 0.000002f));
-        buffer.rotate(angle);
-        buffer.rect(0, 0, cellSize, cellSize);
-        buffer.popMatrix();
+        rotate(angle);
+        rect(0, 0, cellSize, cellSize);
+        popMatrix();
       }
     }
-
-    buffer.endDraw();
-    image(buffer, 0, 0);
   }
 
   float oscillate(float t, float min, float max) {
