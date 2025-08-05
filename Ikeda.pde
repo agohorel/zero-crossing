@@ -2,12 +2,6 @@ class Ikeda implements Sketch {
   int waveformPoints;
   float bandWidth;
 
-  @Override
-    public Intensity getIntensity() {
-    return Intensity.HIGH;
-  }
-
-
   void setup() {
   }
 
@@ -37,9 +31,5 @@ class Ikeda implements Sketch {
   }
 
   void cleanup() {
-  }
-
-  String name() {
-    return "Ikeda";
   }
 }

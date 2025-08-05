@@ -27,12 +27,6 @@ class VectorNetwork implements Sketch {
   int numPoints = 150;
   float connectionDist = 150;
 
-  @Override
-    public Intensity getIntensity() {
-    return Intensity.MID;
-  }
-
-
   void setup() {
     points = new Point[numPoints];
     for (int i = 0; i < numPoints; i++) {
@@ -98,9 +92,5 @@ class VectorNetwork implements Sketch {
   }
 
   void cleanup() {
-  }
-
-  String name() {
-    return "VectorNetwork";
   }
 }

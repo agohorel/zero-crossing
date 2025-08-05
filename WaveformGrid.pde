@@ -2,11 +2,6 @@ class WaveformGrid implements Sketch {
   int gridCols = 128;
   int gridRows = 64;
 
-  @Override
-    public Intensity getIntensity() {
-    return Intensity.HIGH;
-  }
-
   void setup() {
   }
 
@@ -40,9 +35,5 @@ class WaveformGrid implements Sketch {
   }
 
   void cleanup() {
-  }
-
-  String name() {
-    return "WaveformGrid";
   }
 }

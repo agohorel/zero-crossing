@@ -2,11 +2,6 @@ class Tunnel implements Sketch {
   int numCircles = 50;
   int buffer = 250;
 
-  @Override
-    public Intensity getIntensity() {
-    return Intensity.LOW;
-  }
-
   void setup() {
     noFill();
     stroke(255);
@@ -40,9 +35,5 @@ class Tunnel implements Sketch {
   }
 
   void cleanup() {
-  }
-
-  String name() {
-    return "Tunnel";
   }
 }

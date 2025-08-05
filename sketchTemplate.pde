@@ -1,9 +1,4 @@
 class SomeSketch implements Sketch {
-  @Override
-    public Intensity getIntensity() {
-    return Intensity.MID;
-  }
-
   void setup() {
   }
 
@@ -11,9 +6,5 @@ class SomeSketch implements Sketch {
   }
 
   void cleanup() {
-  }
-
-  String name() {
-    return "SketchNameHere";
   }
 }
