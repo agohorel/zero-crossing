@@ -16,7 +16,8 @@ class AudioManager {
       new float[in.bufferSize()], // waveform
       new float[in.bufferSize()], // L waveform
       new float[in.bufferSize()], // R waveform
-      0
+      0.0, // volume,
+      0.0 // volSum
       );
   }
 
@@ -34,6 +35,14 @@ class AudioManager {
     }
 
     audioData.volume = in.mix.level();
+
+    if (audioData.volSum + audioData.volume < Float.MAX_VALUE) {
+      audioData.volSum += audioData.volume;
+    } else {
+      println("Max float value reached — resetting!");
+      audioData.volSum = 0;
+    }
+
 
     audioData.leftWaveform = in.left.toArray();
     audioData.rightWaveform = in.right.toArray();
