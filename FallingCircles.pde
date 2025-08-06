@@ -3,7 +3,7 @@ Circle[] circles;
 
 class FallingCircles implements Sketch {
   void setup() {
-    size(displayWidth, displayHeight);  // similar to windowWidth/Height
+    size(displayWidth, displayHeight, P2D);
     noStroke();
 
     circles = new Circle[NUM_CIRCLES];
@@ -43,14 +43,15 @@ class Circle {
   void update(AudioData audioData) {
     boundsCheck();
 
-    float noiseX = noise(noiseOffsetX + frameCount * noiseSpeed);
+    float noiseX = noise(noiseOffsetX + audioData.volSum * noiseSpeed);
     float horizontalDrift = map(noiseX, 0, 1, -1.5, 1.5);
     x += horizontalDrift;
 
-    x += sin(frameCount * 0.01 + noiseOffsetX) * 0.3;
+    x += sin(audioData.volSum * 0.01 + noiseOffsetX) * 0.3;
 
-    float noiseY = noise(noiseOffsetY + frameCount * noiseSpeed);
+    float noiseY = noise(noiseOffsetY + audioData.volSum * noiseSpeed);
     float verticalVariation = map(noiseY, 0, 1, -0.3, 0.3);
+    fallingSpeed = 1 + audioData.volume * 3;
     y += fallingSpeed + verticalVariation;
 
     fill(255, map(noiseX, 0, 1, 50, 255) * (0.5 + audioData.volume));
