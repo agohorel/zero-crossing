@@ -44,6 +44,7 @@ class SketchManager {
     sketchRegistry.put("VectorNetwork", new SketchMeta(VectorNetwork::new, Intensity.MID));
     sketchRegistry.put("WaveformGrid", new SketchMeta(WaveformGrid::new, Intensity.HIGH));
     sketchRegistry.put("Squares", new SketchMeta(Squares::new, Intensity.HIGH));
+    sketchRegistry.put("SpectralCircles", new SketchMeta(SpectralCircles::new, Intensity.HIGH));
   }
 
   void activateSketch(String sketchName) {

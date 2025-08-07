@@ -2,7 +2,7 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
-  fullScreen(2);
+  // fullScreen(2);
   size(displayWidth, displayHeight, P2D);
 }
 
@@ -28,4 +28,5 @@ void keyPressed() {
   if (key == '5') sketches.activateSketch("VectorNetwork");
   if (key == '6') sketches.activateSketch("WaveformGrid");
   if (key == '7') sketches.activateSketch("Squares");
+  if (key == '8') sketches.activateSketch("SpectralCircles");
 }

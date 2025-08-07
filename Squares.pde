@@ -22,5 +22,6 @@ class Squares implements Sketch {
   }
 
   void cleanup() {
+    rectMode(CORNER);
   }
 }
