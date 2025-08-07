@@ -15,7 +15,7 @@ class SketchManager {
 
   private float LOW_THRESHOLD = 0.075;
   private float MID_THRESHOLD = 0.15;
-  private float HIGH_THRESHOLD = 0.25;
+  private float HIGH_THRESHOLD = 0.2;
 
   private Sketch currentSketch;
   private String currentSketchName;
