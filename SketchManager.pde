@@ -14,8 +14,8 @@ private static class SketchMeta {
 class SketchManager {
 
   private float LOW_THRESHOLD = 0.075;
-  private float MID_THRESHOLD = 0.2;
-  private float HIGH_THRESHOLD = 0.35;
+  private float MID_THRESHOLD = 0.15;
+  private float HIGH_THRESHOLD = 0.25;
 
   private Sketch currentSketch;
   private String currentSketchName;
@@ -86,14 +86,12 @@ class SketchManager {
       Intensity targetIntensity = currentIntensity;
 
       float avgVolHistory = getAverageVolume();
-      println("\naudio volume at switch time", avgVolHistory);
-
-
+      println("\navg recent volume at switch time", avgVolHistory);
 
       if (avgVolHistory > HIGH_THRESHOLD) {
         println("targeting high intensity...");
         targetIntensity = Intensity.HIGH;
-      } else if (avgVolHistory > MID_THRESHOLD) {
+      } else if (avgVolHistory > MID_THRESHOLD && avgVolHistory < HIGH_THRESHOLD) {
         println("targeting medium intensity...");
         targetIntensity = Intensity.MID;
       } else {
@@ -108,33 +106,32 @@ class SketchManager {
   private void switchSketchWithTargetIntensity(Intensity target) {
     List<String> candidates = new ArrayList<>();
 
+    // Gather sketches matching the desired intensity
     for (Map.Entry<String, SketchMeta> entry : sketchRegistry.entrySet()) {
-      String key = entry.getKey();
-      if (isSketchRecentOrCurrent(key)) continue;
-
       if (entry.getValue().intensity == target) {
-        candidates.add(key);
+        println("adding matching candidates");
+        candidates.add(entry.getKey());
       }
     }
 
-    // Fallback to any non-recent sketch
+    // Fallback to all sketches if none match intensity
     if (candidates.isEmpty()) {
-      for (String key : sketchRegistry.keySet()) {
-        if (!isSketchRecentOrCurrent(key)) {
-          candidates.add(key);
-        }
-      }
+      println("no matching candidates");
+      candidates.addAll(sketchRegistry.keySet());
     }
 
+    // Prevent immediately repeating the current sketch
+    candidates.remove(currentSketchName);
+
+    // If we removed the only candidate (i.e. current sketch was the only match), exit
     if (candidates.isEmpty()) return;
 
+    // Pick a sketch at random
     Collections.shuffle(candidates);
     String nextKey = candidates.get(0);
     activateSketch(nextKey);
-
-    recentSketches.add(nextKey);
-    if (recentSketches.size() > RECENT_HISTORY_SIZE) recentSketches.poll();
   }
+
 
   private boolean detectJump(float currentVolume, float[] history, float sensitivity) {
     float sum = 0;
