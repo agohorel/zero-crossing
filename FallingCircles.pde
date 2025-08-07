@@ -51,10 +51,10 @@ class Circle {
 
     float noiseY = noise(noiseOffsetY + audioData.volSum * noiseSpeed);
     float verticalVariation = map(noiseY, 0, 1, -0.3, 0.3);
-    fallingSpeed = 1 + audioData.volume * 3;
+    fallingSpeed = 0.125 + audioData.volume * 4;
     y += fallingSpeed + verticalVariation;
 
-    fill(255, map(noiseX, 0, 1, 50, 255) * (0.5 + audioData.volume));
+    fill(255, map(noiseX, 0, 1, 50, 255) * (0.125 + audioData.volume));
     ellipse(x, y, radius, radius);
   }
 

@@ -2,7 +2,7 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
-  // fullScreen(2);
+  fullScreen(2);
   size(displayWidth, displayHeight, P2D);
 }
 
@@ -11,7 +11,7 @@ void setup() {
   audio.setup(this);
 
   sketches = new SketchManager();
-  sketches.activateSketch("Tunnel");
+  sketches.activateSketch("FallingCircles");
 }
 
 void draw() {
