@@ -3,7 +3,7 @@ SketchManager sketches;
 
 void settings() {
   // fullScreen(2);
-  size(displayWidth, displayHeight, P2D); // Or P3D for 3D support
+  size(displayWidth, displayHeight, P2D);
 }
 
 void setup() {
@@ -27,4 +27,5 @@ void keyPressed() {
   if (key == '4') sketches.activateSketch("Ikeda");
   if (key == '5') sketches.activateSketch("VectorNetwork");
   if (key == '6') sketches.activateSketch("WaveformGrid");
+  if (key == '7') sketches.activateSketch("Squares");
 }

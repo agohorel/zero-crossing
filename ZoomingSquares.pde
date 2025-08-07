@@ -10,9 +10,9 @@ float gridGap = INITIAL_GRID_GAP;
 float cellPadding = INITIAL_CELL_PADDING;
 float cellSize;
 
-PGraphics buffer;
 
 class ZoomingSquares implements Sketch {
+  PGraphics buffer;
 
   void setup() {
     size(displayWidth, displayHeight, P2D);
