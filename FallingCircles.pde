@@ -3,7 +3,6 @@ Circle[] circles;
 
 class FallingCircles implements Sketch {
   void setup() {
-    size(displayWidth, displayHeight, P2D);
     noStroke();
 
     circles = new Circle[NUM_CIRCLES];
