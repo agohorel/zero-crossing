@@ -25,8 +25,6 @@ class SketchManager {
   private static final int VOLUME_HISTORY_SIZE = 10;
   private static final int RECENT_HISTORY_SIZE = 2;
   private float jumpSensitivity = 2.5f;
-  private float upwardsSensitivity = 0.0125f;
-  private float downwardsSensitivity = -0.02f;
 
   private final Queue<String> recentSketches = new LinkedList<>();
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
