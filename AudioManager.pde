@@ -26,15 +26,9 @@ class AudioManager {
   }
 
   void updateAudioData() {
-    for (int i = 0; i < audioData.waveform.length; i++) {
-      audioData.waveform[i] = in.mix.get(i);
-    }
-
-    for (int i = 0; i < audioData.spectrum.length; i++) {
-      audioData.spectrum[i] = fft.getBand(i);
-    }
-
-    audioData.volume = in.mix.level();
+    audioData.waveform = getWaveform();
+    audioData.spectrum = getSpectrum();
+    audioData.volume = getVolume();
 
     if (audioData.volSum + audioData.volume < Float.MAX_VALUE) {
       audioData.volSum += audioData.volume;
@@ -74,7 +68,6 @@ class AudioManager {
   float getVolume() {
     return in.mix.level();
   }
-
 
   void stop() {
     in.close();
