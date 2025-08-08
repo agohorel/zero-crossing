@@ -59,10 +59,4 @@ class WhiteSquare implements Sketch {
   String name() {
     return "ReactiveSquare";
   }
-
-  float oscillate(float t, float min, float max) {
-    float amplitude = (max - min) / 2.0f;
-    float midpoint = (max + min) / 2.0f;
-    return midpoint + amplitude * sin(t);
-  }
 }

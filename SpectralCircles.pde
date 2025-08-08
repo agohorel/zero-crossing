@@ -8,7 +8,6 @@ class SpectralCircles implements Sketch {
   }
 
   void draw(AudioData audioData) {
-
     fill(0, 15 + audioData.volume * 85);
     rect(0, 0, width, height);
 

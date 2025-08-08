@@ -60,12 +60,6 @@ class ZoomingSquares implements Sketch {
     image(buffer, 0, 0);
   }
 
-  float oscillate(float t, float min, float max) {
-    float amplitude = (max - min) / 2.0f;
-    float midpoint = (max + min) / 2.0f;
-    return midpoint + amplitude * sin(t);
-  }
-
   float getCellSize(float gridGap, float padding) {
     return gridGap - padding;
   }
