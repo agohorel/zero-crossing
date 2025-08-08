@@ -87,7 +87,7 @@ class SketchManager {
       float avgVolHistory = getAverageVolume();
       println("\navg recent volume at switch time", avgVolHistory);
 
-      if (avgVolHistory > HIGH_THRESHOLD) {
+      if (avgVolHistory >= HIGH_THRESHOLD) {
         println("targeting high intensity...");
         targetIntensity = Intensity.HIGH;
       } else if (avgVolHistory > MID_THRESHOLD && avgVolHistory < HIGH_THRESHOLD) {
