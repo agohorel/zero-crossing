@@ -42,7 +42,7 @@ class AudioManager {
 
     audioData.spectrum = getSpectrum();
 
-    float bassRaw = getBandEnergy(20, 250);
+    float bassRaw = getBandEnergy(80, 250);
     float midRaw  = getBandEnergy(300, 4000);
     float highRaw = getBandEnergy(7500, 15000);
 
