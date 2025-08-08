@@ -30,4 +30,5 @@ void keyPressed() {
   if (key == '7') sketches.activateSketch("Squares");
   if (key == '8') sketches.activateSketch("SpectralCircles");
   if (key == '9') sketches.activateSketch("WhiteSquare");
+  if (key == '0') sketches.activateSketch("VerticalIkeda");
 }

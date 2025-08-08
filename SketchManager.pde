@@ -42,6 +42,7 @@ class SketchManager {
     sketchRegistry.put("Ikeda", new SketchMeta(Ikeda::new, Intensity.HIGH));
     sketchRegistry.put("Squares", new SketchMeta(Squares::new, Intensity.HIGH));
     sketchRegistry.put("SpectralCircles", new SketchMeta(SpectralCircles::new, Intensity.HIGH));
+    sketchRegistry.put("VerticalIkeda", new SketchMeta(VerticalIkeda::new, Intensity.HIGH));
   }
 
   void activateSketch(String sketchName) {
