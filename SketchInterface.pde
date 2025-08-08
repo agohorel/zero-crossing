@@ -9,6 +9,6 @@ interface Sketch {
 
   // sketches can optionally declare max runtimes
   default int getMaxRuntime() {
-    return 1000;
+    return 10000;
   }
 }

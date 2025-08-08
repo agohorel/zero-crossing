@@ -4,6 +4,6 @@ float oscillate(float t, float min, float max) {
   return midpoint + amplitude * sin(t);
 }
 
-float smoothValue(float current, float target, float smoothingFactor) {
-  return lerp(current, target, smoothingFactor);
+float smooth(float current, float target, float smoothingFactor) {
+  return current + (target - current) * smoothingFactor;
 }
