@@ -22,7 +22,7 @@ class WhiteSquare implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    fill(0, audioData.volume * 255);
+    fill(0, 10 + audioData.volume * 255);
     rect(baseX, baseY, width, height);
 
     time = audioData.volSum * 0.125;
