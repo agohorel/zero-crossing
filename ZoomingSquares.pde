@@ -71,5 +71,6 @@ class ZoomingSquares implements Sketch {
   }
 
   void cleanup() {
+    rectMode(CORNER);
   }
 }

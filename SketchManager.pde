@@ -33,12 +33,13 @@ class SketchManager {
   }
 
   private void registerSketches() {
-    sketchRegistry.put("Tunnel", new SketchMeta(Tunnel::new, Intensity.MID));
+    sketchRegistry.put("WhiteSquare", new SketchMeta(WhiteSquare::new, Intensity.LOW));
     sketchRegistry.put("FallingCircles", new SketchMeta(FallingCircles::new, Intensity.LOW));
     sketchRegistry.put("ZoomingSquares", new SketchMeta(ZoomingSquares::new, Intensity.LOW));
-    sketchRegistry.put("Ikeda", new SketchMeta(Ikeda::new, Intensity.HIGH));
+    sketchRegistry.put("Tunnel", new SketchMeta(Tunnel::new, Intensity.MID));
     sketchRegistry.put("VectorNetwork", new SketchMeta(VectorNetwork::new, Intensity.MID));
     sketchRegistry.put("WaveformGrid", new SketchMeta(WaveformGrid::new, Intensity.HIGH));
+    sketchRegistry.put("Ikeda", new SketchMeta(Ikeda::new, Intensity.HIGH));
     sketchRegistry.put("Squares", new SketchMeta(Squares::new, Intensity.HIGH));
     sketchRegistry.put("SpectralCircles", new SketchMeta(SpectralCircles::new, Intensity.HIGH));
   }
