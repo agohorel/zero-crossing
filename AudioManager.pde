@@ -89,9 +89,6 @@ class AudioManager {
 
     float sum = 0;
     for (int i = lowBound; i <= highBound; i++) {
-      if (start == 20) {
-        println(fft.getBand(i));
-      }
       sum += fft.getBand(i);
     }
 
