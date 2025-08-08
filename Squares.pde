@@ -14,9 +14,9 @@ class Squares implements Sketch {
 
     for (int i = 0; i < audioData.waveform.length; i++) {
       smoothed = smooth(smoothed, audioData.waveform[i], 0.0025);
-      float size = smoothed * 2 * width;
+      float size = 50 + smoothed * 2 * width;
       rotate(audioData.volSum * 0.0002 * smoothed);
-      stroke(audioData.waveform[i] * 300);
+      stroke(audioData.volume * 20 + audioData.waveform[i] * 300);
       rect(0, 0, size, size);
     }
   }
