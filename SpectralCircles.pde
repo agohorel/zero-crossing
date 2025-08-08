@@ -21,6 +21,5 @@ class SpectralCircles implements Sketch {
   }
 
   void cleanup() {
-    ellipseMode(CORNER);
   }
 }
