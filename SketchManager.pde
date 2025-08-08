@@ -12,8 +12,6 @@ private static class SketchMeta {
 }
 
 class SketchManager {
-
-  private float LOW_THRESHOLD = 0.075;
   private float MID_THRESHOLD = 0.15;
   private float HIGH_THRESHOLD = 0.2;
 
@@ -23,10 +21,8 @@ class SketchManager {
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
-  private static final int RECENT_HISTORY_SIZE = 2;
   private float jumpSensitivity = 2.5f;
 
-  private final Queue<String> recentSketches = new LinkedList<>();
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
   private int volumeHistoryIndex = 0;
   private int currentSketchStartTime = 0;
@@ -156,9 +152,5 @@ class SketchManager {
   private void clearVolumeHistory() {
     Arrays.fill(volumeHistory, 0);
     volumeHistoryIndex = 0;
-  }
-
-  private boolean isSketchRecentOrCurrent(String name) {
-    return name.equals(currentSketchName) || recentSketches.contains(name);
   }
 }
