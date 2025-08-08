@@ -1,17 +1,16 @@
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 
-
-
 class AudioManager {
   Minim minim;
   AudioInput in;
   FFT fft;
   AudioData audioData;
 
-  RollingNormalizer bassNorm = new RollingNormalizer(0.98);
-  RollingNormalizer midNorm  = new RollingNormalizer(0.98);
-  RollingNormalizer highNorm = new RollingNormalizer(0.98);
+  float decay = 0.98;
+  RollingNormalizer bassNorm = new RollingNormalizer(decay);
+  RollingNormalizer midNorm  = new RollingNormalizer(decay);
+  RollingNormalizer highNorm = new RollingNormalizer(decay);
 
   void setup(PApplet parent) {
     minim = new Minim(parent);
