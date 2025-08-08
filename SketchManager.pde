@@ -12,19 +12,19 @@ private static class SketchMeta {
 }
 
 class SketchManager {
-  private float MID_ENERGY_THRESHOLD = 150;
-  private float HIGH_ENERGY_THRESHOLD = 220;
+  private float MID_THRESHOLD = 0.15;
+  private float HIGH_THRESHOLD = 0.2;
 
   private Sketch currentSketch;
   private String currentSketchName;
   private final Map<String, SketchMeta> sketchRegistry;
 
   // Auto-switch config
-  private static final int BASS_HISTORY_SIZE = 10;
+  private static final int VOLUME_HISTORY_SIZE = 10;
   private float jumpSensitivity = 2.5f;
 
-  private final float[] bassHistory = new float[BASS_HISTORY_SIZE];
-  private int bassHistoryIndex = 0;
+  private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
+  private int volumeHistoryIndex = 0;
   private int currentSketchStartTime = 0;
 
   SketchManager() {
@@ -56,7 +56,7 @@ class SketchManager {
       currentSketchName = sketchName;
       currentSketch.setup();
       currentSketchStartTime = millis();
-      clearBassHistory();
+      clearVolumeHistory();
       println("Loaded sketch: " + sketchName);
     } else {
       println("Unknown sketch: " + sketchName);
@@ -68,14 +68,14 @@ class SketchManager {
 
     currentSketch.draw(audioData);
 
-    bassHistory[bassHistoryIndex] = audioData.bass;
-    bassHistoryIndex = (bassHistoryIndex + 1) % BASS_HISTORY_SIZE;
+    volumeHistory[volumeHistoryIndex] = audioData.volume;
+    volumeHistoryIndex = (volumeHistoryIndex + 1) % VOLUME_HISTORY_SIZE;
 
     int elapsed = millis() - currentSketchStartTime;
     int maxRuntime = currentSketch.getMaxRuntime();
 
     if (elapsed > maxRuntime &&
-      detectJump(audioData.bass, bassHistory, jumpSensitivity)) {
+      detectJump(audioData.volume, volumeHistory, jumpSensitivity)) {
 
       SketchMeta meta = sketchRegistry.get(currentSketchName);
 
@@ -83,12 +83,12 @@ class SketchManager {
       Intensity targetIntensity = currentIntensity;
 
       float avgVolHistory = getAverageVolume();
-      println("\navg recent bass energy at switch time", avgVolHistory);
+      println("\navg recent volume at switch time", avgVolHistory);
 
-      if (avgVolHistory >= HIGH_ENERGY_THRESHOLD) {
+      if (avgVolHistory >= HIGH_THRESHOLD) {
         println("targeting high intensity...");
         targetIntensity = Intensity.HIGH;
-      } else if (avgVolHistory >= MID_ENERGY_THRESHOLD && avgVolHistory < HIGH_ENERGY_THRESHOLD) {
+      } else if (avgVolHistory > MID_THRESHOLD && avgVolHistory < HIGH_THRESHOLD) {
         println("targeting medium intensity...");
         targetIntensity = Intensity.MID;
       } else {
@@ -147,12 +147,12 @@ class SketchManager {
 
   private float getAverageVolume() {
     float sum = 0;
-    for (float amplitudeFrame : bassHistory) sum += amplitudeFrame;
-    return sum / BASS_HISTORY_SIZE;
+    for (float volFrame : volumeHistory) sum += volFrame;
+    return sum / VOLUME_HISTORY_SIZE;
   }
 
-  private void clearBassHistory() {
-    Arrays.fill(bassHistory, 0);
-    bassHistoryIndex = 0;
+  private void clearVolumeHistory() {
+    Arrays.fill(volumeHistory, 0);
+    volumeHistoryIndex = 0;
   }
 }
