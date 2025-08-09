@@ -10,7 +10,18 @@ class Blob implements Sketch {
   float xOscRange = width * 0.25;
   float yOscRange = height * 0.25;
 
+  // lookup tables for precomputed cos/sin values
+  float[] cosTable;
+  float [] sinTable;
+
   void setup() {
+    cosTable = new float[points];
+    sinTable = new float[points];
+    for (int i = 0; i < points; i++) {
+      float angle = map(i, 0, points, 0, TWO_PI);
+      cosTable[i] = cos(angle);
+      sinTable[i] = sin(angle);
+    }
   }
 
   void draw(AudioData audioData) {
@@ -33,8 +44,8 @@ class Blob implements Sketch {
     float speed = audioData.volSum * 0.25;
     for (int i = 0; i < points; i++) {
       float angle = map(i, 0, points, 0, TWO_PI);
-      float xOff = cos(angle);
-      float yOff = sin(angle);
+      float xOff = cosTable[i];
+      float yOff = sinTable[i];
 
       // distort
       float noiseVal = noise(xOff * noiseScale + speed,
