@@ -41,8 +41,8 @@ class Blob implements Sketch {
       // map noise to a radius offset, modulated by audio
       float radius = baseRadius + map(noiseVal, 0, 1, -20, 20) * (1 + audioData.volume * 20);
 
-      float x = width / 2 + radius * xOff;
-      float y = height / 2 + radius * yOff;
+      float x = width * 0.5f + radius * xOff;
+      float y = height * 0.5f + radius * yOff;
 
       vertex(x, y);
     }
