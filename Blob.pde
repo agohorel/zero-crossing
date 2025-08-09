@@ -43,7 +43,6 @@ class Blob implements Sketch {
     beginShape();
     float speed = audioData.volSum * 0.25;
     for (int i = 0; i < points; i++) {
-      float angle = map(i, 0, points, 0, TWO_PI);
       float xOff = cosTable[i];
       float yOff = sinTable[i];
 
