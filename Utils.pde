@@ -1,6 +1,6 @@
 float oscillate(float t, float min, float max) {
-  float amplitude = (max - min) / 2.0f;
-  float midpoint = (max + min) / 2.0f;
+  float amplitude = (max - min) * 0.5f;
+  float midpoint = (max + min) * 0.5f;
   return midpoint + amplitude * sin(t);
 }
 
