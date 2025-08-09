@@ -28,8 +28,6 @@ class Blob implements Sketch {
     background(0);
     fill(255);
 
-    println(frameRate);
-
     smoothed = smooth(smoothed, audioData.volume * width * 1.75, 0.01);
 
     float xOsc = oscillate(audioData.volSum * 0.1, -xOscRange, xOscRange);
