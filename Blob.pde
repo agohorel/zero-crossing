@@ -1,5 +1,5 @@
 class Blob implements Sketch {
-  int points = 100; // smoothness
+  int points = 50; // smoothness
   float radius = 100; // base size
 
   float noiseScale = 0.5; // how stretched the noise is
@@ -16,6 +16,8 @@ class Blob implements Sketch {
   void draw(AudioData audioData) {
     background(0);
     fill(255);
+
+    println(frameRate);
 
     smoothed = smooth(smoothed, audioData.volume * width * 1.75, 0.01);
 
