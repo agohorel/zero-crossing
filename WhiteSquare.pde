@@ -8,9 +8,9 @@ class WhiteSquare implements Sketch {
   float time;             // Time tracker for oscillation
 
   void setup() {
-    baseX = width / 2;
-    baseY = height / 2;
-    offset = width / 4;
+    baseX = width * 0.5f;
+    baseY = height * 0.5f;
+    offset = width * 0.25f;
     x = baseX;
     y = baseY;
     size = 100;
@@ -22,7 +22,7 @@ class WhiteSquare implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    fill(0, 10 + audioData.volume * 255);
+    fill(0, 20);
     rect(baseX, baseY, width, height);
 
     time = audioData.volSum * 0.125;
@@ -47,8 +47,7 @@ class WhiteSquare implements Sketch {
     translate(x, y);
     rotate(angle);
     fill(255);
-    float finalSize = size + morphFactor;
-    rect(0, 0, finalSize, finalSize);
+    rect(0, 0, size, size);
     popMatrix();
   }
 

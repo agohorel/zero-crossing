@@ -38,7 +38,7 @@ class ZoomingSquares implements Sketch {
     buffer.beginDraw();
     buffer.background(0);
     buffer.resetMatrix();
-    buffer.translate(width / 2f - gridWidth / 2f, height / 2f - gridHeight / 2f);
+    buffer.translate(width * 0.5f - gridWidth * 0.5f, height * 0.5f - gridHeight * 0.5f);
 
     buffer.noStroke();
     buffer.fill(255, audioData.volume * 400);

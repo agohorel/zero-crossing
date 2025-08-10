@@ -27,8 +27,8 @@ class WaveformGrid implements Sketch {
         float brightness = map(amp, 0, 1, 50, 255);
 
         fill(brightness);
-        float cx = x * cellWidth + cellWidth / 2;
-        float cy = y * cellHeight + cellHeight / 2;
+        float cx = x * cellWidth + cellWidth * 0.5f;
+        float cy = y * cellHeight + cellHeight * 0.5f;
         ellipse(cx, cy, radius, radius);
       }
     }
