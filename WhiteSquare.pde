@@ -1,11 +1,13 @@
 class WhiteSquare implements Sketch {
-  float baseX, baseY;     // Center position
-  float x, y;             // Oscillating position
-  float offset;           // Offset for oscillating position
-  float size;             // Oscillating size
-  float angle;            // Rotation
-  float morphFactor;      // For subtle morphing
-  float time;             // Time tracker for oscillation
+  float baseX, baseY;
+  float x, y;
+  float offset;
+  float offsetMinX, offsetMaxX;
+  float offsetMinY, offsetMaxY;
+  float size;
+  float angle;
+  float morphFactor;
+  float time;
 
   void setup() {
     baseX = width * 0.5f;
@@ -17,6 +19,13 @@ class WhiteSquare implements Sketch {
     angle = 0;
     morphFactor = 0;
     time = 0;
+
+    // Precompute offset bounds
+    offsetMinX = baseX - offset;
+    offsetMaxX = baseX + offset;
+    offsetMinY = baseY - offset;
+    offsetMaxY = baseY + offset;
+
     noStroke();
     rectMode(CENTER);
   }
@@ -25,24 +34,30 @@ class WhiteSquare implements Sketch {
     fill(0, 20);
     rect(baseX, baseY, width, height);
 
-    time = audioData.volSum * 0.125;
+    time = audioData.volSum * 0.125f;
 
-    // Oscillate position around center with small amplitude + high freq jitter
-    float oscX = oscillate(time, baseX - offset, baseX + offset);
-    float oscY = oscillate(time * 0.4, baseY - offset, baseY + offset);
-    float jitterX = map(audioData.high, 0, 255, -10, 10);
-    float jitterY = map(audioData.high, 0, 255, -10, 10);
-    x = lerp(x, oscX + jitterX, 0.1f);
-    y = lerp(y, oscY + jitterY, 0.1f);
+    // Oscillate X and Y around center
+    float oscX = oscillate(time, offsetMinX, offsetMaxX);
+    float oscY = oscillate(time * 0.4f, offsetMinY, offsetMaxY);
 
-    // Oscillate size between 80 and 140 and modulate morph by mid freq
-    float baseSize = oscillate(time * 0.8f, 20, height);
-    morphFactor = lerp(morphFactor, audioData.mid * 0.5f, 0.1f);
+
+    float jitterFactor = audioData.high * 0.07843f; // 20 / 255 = ~0.07843
+    float jitterX = jitterFactor - 10f;
+    float jitterY = jitterFactor - 10f;
+
+    // Interpolate position
+    x += (oscX + jitterX - x) * 0.1f;
+    y += (oscY + jitterY - y) * 0.1f;
+
+    // Size modulation
+    float baseSize = oscillate(time * 0.8f, 20f, height);
+    morphFactor += (audioData.mid * 0.5f - morphFactor) * 0.1f;
     size = baseSize + morphFactor;
 
-    // Rotate by bass amount
-    angle += audioData.bass * 0.0005;
+    // Angle update
+    angle += audioData.bass * 0.0005f;
 
+    // Draw square
     pushMatrix();
     translate(x, y);
     rotate(angle);
