@@ -11,6 +11,8 @@ class SketchManager {
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
   private float jumpSensitivity = 2.75f;
+  private float minJumpMagnitude = 0.075f;  // abs vol change must be greater than this to switch
+
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
   private int volumeHistoryIndex = 0;
   private int currentSketchStartTime = 0;
@@ -74,8 +76,12 @@ class SketchManager {
     int elapsed = millis() - currentSketchStartTime;
     int minRuntime = currentSketch.getMinRuntime();
 
+    float avgVolHistory = getAverageVolume(volumeHistory);
+    float volumeDiff = abs(audioData.volume - avgVolHistory);
+
     if (elapsed > minRuntime &&
-      detectJump(audioData.volume, volumeHistory, jumpSensitivity)) {
+      volumeDiff > minJumpMagnitude &&
+      detectJump(audioData.volume, avgVolHistory, jumpSensitivity)) {
       switchSketch();
     }
   }
@@ -94,23 +100,25 @@ class SketchManager {
     activateSketch(nextKey);
   }
 
-  private boolean detectJump(float currentVolume, float[] history, float sensitivity) {
-    float sum = 0;
-    for (float v : history) sum += v;
-    float mean = sum / history.length;
-
+  private boolean detectJump(float currentVolume, float historyMean, float sensitivity) {
     float varianceSum = 0;
-    for (float v : history) {
-      float diff = v - mean;
+    for (float v : volumeHistory) {
+      float diff = v - historyMean;
       varianceSum += diff * diff;
     }
 
-    float stddev = sqrt(varianceSum / history.length);
-    return abs(currentVolume - mean) > sensitivity * stddev;
+    float stddev = sqrt(varianceSum / VOLUME_HISTORY_SIZE);
+    return abs(currentVolume - historyMean) > sensitivity * stddev;
   }
 
   private void clearVolumeHistory() {
     Arrays.fill(volumeHistory, 0);
     volumeHistoryIndex = 0;
+  }
+
+  private float getAverageVolume(float[] history) {
+    float sum = 0;
+    for (float v : history) sum += v;
+    return sum / history.length;
   }
 }
