@@ -2,7 +2,7 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
-  // fullScreen(2);
+  fullScreen(2);
   size(displayWidth, displayHeight, P2D);
 }
 

@@ -1,51 +1,40 @@
 import java.util.*;
 import java.util.function.Supplier;
 
-private static class SketchMeta {
-  final Supplier<Sketch> constructor;
-  final Intensity intensity;
-
-  SketchMeta(Supplier<Sketch> constructor, Intensity intensity) {
-    this.constructor = constructor;
-    this.intensity = intensity;
-  }
-}
-
 class SketchManager {
-  private float MID_THRESHOLD = 0.15;
-  private float HIGH_THRESHOLD = 0.2;
-
   private Sketch currentSketch;
   private String currentSketchName;
-  private final Map<String, SketchMeta> sketchRegistry;
+  private final Map<String, Supplier<Sketch>> sketchRegistry;
+  private final String[] sketchKeys; // all sketch names in an array
+  private int currentIndex = -1;     // index of current sketch
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
-  private float jumpSensitivity = 2.5f;
-
+  private float jumpSensitivity = 2.75f;
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
   private int volumeHistoryIndex = 0;
   private int currentSketchStartTime = 0;
 
   SketchManager() {
-    sketchRegistry = new HashMap<>();
+    sketchRegistry = new LinkedHashMap<>();
     registerSketches();
+    sketchKeys = sketchRegistry.keySet().toArray(new String[0]);
   }
 
   private void registerSketches() {
-    sketchRegistry.put("WhiteSquare", new SketchMeta(WhiteSquare::new, Intensity.LOW));
-    sketchRegistry.put("FallingCircles", new SketchMeta(FallingCircles::new, Intensity.LOW));
-    sketchRegistry.put("ZoomingSquares", new SketchMeta(ZoomingSquares::new, Intensity.LOW));
+    sketchRegistry.put("WhiteSquare", WhiteSquare::new);
+    sketchRegistry.put("FallingCircles", FallingCircles::new);
+    sketchRegistry.put("ZoomingSquares", ZoomingSquares::new);
 
-    sketchRegistry.put("Tunnel", new SketchMeta(Tunnel::new, Intensity.MID));
-    sketchRegistry.put("VectorNetwork", new SketchMeta(VectorNetwork::new, Intensity.MID));
-    sketchRegistry.put("Blob", new SketchMeta(Blob::new, Intensity.MID));
+    sketchRegistry.put("Tunnel", Tunnel::new);
+    sketchRegistry.put("VectorNetwork", VectorNetwork::new);
+    sketchRegistry.put("Blob", Blob::new);
 
-    sketchRegistry.put("WaveformGrid", new SketchMeta(WaveformGrid::new, Intensity.HIGH));
-    sketchRegistry.put("Ikeda", new SketchMeta(Ikeda::new, Intensity.HIGH));
-    sketchRegistry.put("Squares", new SketchMeta(Squares::new, Intensity.HIGH));
-    sketchRegistry.put("SpectralCircles", new SketchMeta(SpectralCircles::new, Intensity.HIGH));
-    sketchRegistry.put("VerticalIkeda", new SketchMeta(VerticalIkeda::new, Intensity.HIGH));
+    sketchRegistry.put("WaveformGrid", WaveformGrid::new);
+    sketchRegistry.put("Ikeda", Ikeda::new);
+    sketchRegistry.put("Squares", Squares::new);
+    sketchRegistry.put("SpectralCircles", SpectralCircles::new);
+    sketchRegistry.put("VerticalIkeda", VerticalIkeda::new);
   }
 
   void activateSketch(String sketchName) {
@@ -53,12 +42,20 @@ class SketchManager {
       currentSketch.cleanup();
     }
 
-    SketchMeta meta = sketchRegistry.get(sketchName);
-    if (meta != null) {
-      currentSketch = meta.constructor.get();
-      currentSketchName = sketchName;
+    Supplier<Sketch> sketch = sketchRegistry.get(sketchName);
+    if (sketch != null) {
+      currentSketch = sketch.get();
       currentSketch.setup();
       currentSketchStartTime = millis();
+
+      currentSketchName = sketchName;
+      // update index
+      for (int i = 0; i < sketchKeys.length; i++) {
+        if (sketchKeys[i].equals(sketchName)) {
+          currentIndex = i;
+          break;
+        }
+      }
       clearVolumeHistory();
       println("Loaded sketch: " + sketchName);
     } else {
@@ -75,63 +72,27 @@ class SketchManager {
     volumeHistoryIndex = (volumeHistoryIndex + 1) % VOLUME_HISTORY_SIZE;
 
     int elapsed = millis() - currentSketchStartTime;
-    int maxRuntime = currentSketch.getMaxRuntime();
+    int minRuntime = currentSketch.getMinRuntime();
 
-    if (elapsed > maxRuntime &&
+    if (elapsed > minRuntime &&
       detectJump(audioData.volume, volumeHistory, jumpSensitivity)) {
-
-      SketchMeta meta = sketchRegistry.get(currentSketchName);
-
-      Intensity currentIntensity = meta.intensity;
-      Intensity targetIntensity = currentIntensity;
-
-      float avgVolHistory = getAverageVolume();
-      println("\navg recent volume at switch time", avgVolHistory);
-
-      if (avgVolHistory >= HIGH_THRESHOLD) {
-        println("targeting high intensity...");
-        targetIntensity = Intensity.HIGH;
-      } else if (avgVolHistory > MID_THRESHOLD && avgVolHistory < HIGH_THRESHOLD) {
-        println("targeting medium intensity...");
-        targetIntensity = Intensity.MID;
-      } else {
-        println("targeting low intensity...");
-        targetIntensity = Intensity.LOW;
-      }
-
-      switchSketchWithTargetIntensity(targetIntensity);
+      switchSketch();
     }
   }
 
-  private void switchSketchWithTargetIntensity(Intensity target) {
-    List<String> candidates = new ArrayList<>();
+  private void switchSketch() {
+    // Pick random index that’s NOT the current index
+    int size = sketchKeys.length;
+    if (size <= 1) return;
 
-    // Gather sketches matching the desired intensity
-    for (Map.Entry<String, SketchMeta> entry : sketchRegistry.entrySet()) {
-      if (entry.getValue().intensity == target) {
-        println("adding matching candidates");
-        candidates.add(entry.getKey());
-      }
+    int newIndex = (int) random(size - 1);
+    if (newIndex >= currentIndex) {
+      newIndex++;
     }
 
-    // Fallback to all sketches if none match intensity
-    if (candidates.isEmpty()) {
-      println("no matching candidates");
-      candidates.addAll(sketchRegistry.keySet());
-    }
-
-    // Prevent immediately repeating the current sketch
-    candidates.remove(currentSketchName);
-
-    // If we removed the only candidate (i.e. current sketch was the only match), exit
-    if (candidates.isEmpty()) return;
-
-    // Pick a sketch at random
-    Collections.shuffle(candidates);
-    String nextKey = candidates.get(0);
+    String nextKey = sketchKeys[newIndex];
     activateSketch(nextKey);
   }
-
 
   private boolean detectJump(float currentVolume, float[] history, float sensitivity) {
     float sum = 0;
@@ -146,12 +107,6 @@ class SketchManager {
 
     float stddev = sqrt(varianceSum / history.length);
     return abs(currentVolume - mean) > sensitivity * stddev;
-  }
-
-  private float getAverageVolume() {
-    float sum = 0;
-    for (float volFrame : volumeHistory) sum += volFrame;
-    return sum / VOLUME_HISTORY_SIZE;
   }
 
   private void clearVolumeHistory() {

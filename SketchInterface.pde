@@ -7,8 +7,7 @@ interface Sketch {
   void draw(AudioData audioData);
   void cleanup();
 
-  // sketches can optionally declare max runtimes
-  default int getMaxRuntime() {
-    return 10000;
+  default int getMinRuntime() {
+    return 100;
   }
 }

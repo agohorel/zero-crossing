@@ -14,9 +14,9 @@ float cellSize;
 class ZoomingSquares implements Sketch {
   PGraphics buffer;
 
-  // int getMaxRuntime() {
-  //   return 15000;
-  // }
+  int getMinRuntime() {
+    return 15000;
+  }
 
   void setup() {
     buffer = createGraphics(width, height, P2D);
