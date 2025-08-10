@@ -2,7 +2,7 @@ AudioManager audio;
 SketchManager sketches;
 
 void settings() {
-  fullScreen(2);
+  // fullScreen(2);
   size(displayWidth, displayHeight, P2D);
 }
 
@@ -22,7 +22,8 @@ void draw() {
 
 void keyPressed() {
   // if (key == '1') sketches.activateSketch("Tunnel");
-  if (key == '1') sketches.activateSketch("Blob");
+  // if (key == '1') sketches.activateSketch("Blob");
+  if (key == '1') sketches.activateSketch("Vectorscope");
   if (key == '2') sketches.activateSketch("FallingCircles");
   if (key == '3') sketches.activateSketch("ZoomingSquares");
   if (key == '4') sketches.activateSketch("Ikeda");

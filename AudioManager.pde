@@ -25,7 +25,8 @@ class AudioManager {
       0.0, // volSum
       0.0, // bass
       0.0, // mid
-      0.0 // high
+      0.0, // high
+      in.bufferSize()
       );
   }
 

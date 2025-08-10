@@ -8,6 +8,7 @@ class AudioData {
   float bass;
   float mid;
   float high;
+  int bufferSize;
 
   AudioData(
     float[] waveform,
@@ -18,7 +19,8 @@ class AudioData {
     float volSum,
     float bass,
     float mid,
-    float high
+    float high,
+    int bufferSize
     ) {
     this.waveform = waveform;
     this.leftWaveform = leftWaveform;
@@ -29,5 +31,6 @@ class AudioData {
     this.bass = bass;
     this.mid = mid;
     this.high = high;
+    this.bufferSize = bufferSize;
   }
 }

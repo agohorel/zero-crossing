@@ -37,6 +37,7 @@ class SketchManager {
     sketchRegistry.put("Squares", Squares::new);
     sketchRegistry.put("SpectralCircles", SpectralCircles::new);
     sketchRegistry.put("VerticalIkeda", VerticalIkeda::new);
+    sketchRegistry.put("Vectorscope", Vectorscope::new);
   }
 
   void activateSketch(String sketchName) {
