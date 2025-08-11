@@ -37,11 +37,15 @@ class AudioManager {
   void updateAudioData() {
     audioData.volume = getVolume();
 
-    audioData.waveform = getWaveform();
-    audioData.leftWaveform = in.left.toArray();
-    audioData.rightWaveform = in.right.toArray();
+    for (int i = 0; i < audioData.waveform.length; i++) {
+      audioData.waveform[i] = in.mix.get(i);
+      audioData.leftWaveform[i] = in.left.get(i);
+      audioData.rightWaveform[i] = in.right.get(i);
+    }
 
-    audioData.spectrum = getSpectrum();
+    for (int i = 0; i < audioData.spectrum.length; i++) {
+      audioData.spectrum[i] = fft.getBand(i);
+    }
 
     float bassRaw = getBandEnergy(20, 250);
     float midRaw  = getBandEnergy(300, 4000);
@@ -62,22 +66,6 @@ class AudioManager {
   void update() {
     fft.forward(in.mix);
     updateAudioData();
-  }
-
-  float[] getWaveform() {
-    float[] waveform = new float[in.bufferSize()];
-    for (int i = 0; i < waveform.length; i++) {
-      waveform[i] = in.mix.get(i);
-    }
-    return waveform;
-  }
-
-  float[] getSpectrum() {
-    float[] spectrum = new float[fft.specSize()];
-    for (int i = 0; i < spectrum.length; i++) {
-      spectrum[i] = fft.getBand(i);
-    }
-    return spectrum;
   }
 
   float getVolume() {
