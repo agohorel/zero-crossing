@@ -6,6 +6,7 @@ class AudioManager {
   AudioInput in;
   FFT fft;
   AudioData audioData;
+  int bassLow, bassHigh, midLow, midHigh, highLow, highHigh;
 
   float decay = 0.98;
   RollingNormalizer bassNorm = new RollingNormalizer(decay);
@@ -28,6 +29,13 @@ class AudioManager {
       0.0, // high
       in.bufferSize()
       );
+
+    bassLow = fft.freqToIndex(20);
+    bassHigh = fft.freqToIndex(250);
+    midLow = fft.freqToIndex(300);
+    midHigh = fft.freqToIndex(4000);
+    highLow = fft.freqToIndex(7500);
+    highHigh = fft.freqToIndex(15000);
   }
 
   AudioData getAudioData() {
@@ -47,9 +55,9 @@ class AudioManager {
       audioData.spectrum[i] = fft.getBand(i);
     }
 
-    float bassRaw = getBandEnergy(20, 250);
-    float midRaw  = getBandEnergy(300, 4000);
-    float highRaw = getBandEnergy(7500, 15000);
+    float bassRaw = getBandEnergy(bassLow, bassHigh);
+    float midRaw  = getBandEnergy(midLow, midHigh);
+    float highRaw = getBandEnergy(highLow, highHigh);
 
     audioData.bass = bassNorm.process(bassRaw);
     audioData.mid  = midNorm.process(midRaw);
@@ -72,10 +80,7 @@ class AudioManager {
     return in.mix.level();
   }
 
-  float getBandEnergy(int start, int stop) {
-    int lowBound = fft.freqToIndex(start);
-    int highBound = fft.freqToIndex(stop);
-
+  float getBandEnergy(int lowBound, int highBound) {
     float sum = 0;
     for (int i = lowBound; i <= highBound; i++) {
       sum += fft.getBand(i);
