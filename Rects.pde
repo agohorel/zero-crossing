@@ -1,4 +1,11 @@
 class Rects implements Sketch {
+  int numRects = 11; // must be odd so we have a center
+  float baseMaxHeightRatio = 0.125;
+  float falloff = 0.67;
+
+  float spacing = height / (numRects + 1);
+  float verticalOffset = (height - (spacing * (numRects - 1))) / 2;
+
   void setup() {
     rectMode(CENTER);
     fill(255);
@@ -8,12 +15,7 @@ class Rects implements Sketch {
   void draw(AudioData audioData) {
     background(0);
 
-    int numRects = 11; // must be odd so we have a center
-    float baseMaxHeightRatio = 0.125;
-    float falloff = 0.67;
 
-    float spacing = height / (numRects + 1);
-    float verticalOffset = (height - (spacing * (numRects - 1))) / 2;
 
     for (int i = 0; i < numRects; i++) {
       float y = verticalOffset + i * spacing;
