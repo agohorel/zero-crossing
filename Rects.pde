@@ -22,7 +22,7 @@ class Rects implements Sketch {
 
       float audioLevel = 1 + (audioData.volSum * 0.000001 % 1);
 
-      float loopPhase = (audioData.volSum * 0.6 + i * 0.2) % TWO_PI;
+      float loopPhase = (audioData.volSum * 0.4 + i * 0.2) % TWO_PI;
       float fillPercent = abs(sin(loopPhase)) * audioLevel;
 
       float h = maxHeight * fillPercent;
