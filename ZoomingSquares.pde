@@ -15,7 +15,7 @@ class ZoomingSquares extends BaseSketch {
   PGraphics buffer;
 
   int getMinRuntime() {
-    return 15000;
+    return 5000;
   }
 
   void setup() {
