@@ -4,7 +4,7 @@ interface Sketch {
   void cleanup();
 
   default int getMinRuntime() {
-    return 100;
+    return 1000;
   }
 }
 
@@ -18,6 +18,6 @@ public abstract class BaseSketch implements Sketch {
   }
 
   float processColor(float c) {
-    return invertColors ? constrain(255 - c * INVERT_DARKNESS_EXAGGERATION, 0, 255) : c;
+    return invertColors ? constrain(255 - (c * INVERT_DARKNESS_EXAGGERATION), 0, 255) : c;
   }
 }

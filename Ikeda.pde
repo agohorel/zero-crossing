@@ -1,5 +1,8 @@
 class Ikeda extends BaseSketch {
   void setup() {
+    if (invertColors) {
+      strokeWeight(6);
+    }
   }
 
   void draw(AudioData audioData) {
@@ -28,5 +31,6 @@ class Ikeda extends BaseSketch {
   }
 
   void cleanup() {
+    strokeWeight(1);
   }
 }
