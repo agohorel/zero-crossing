@@ -1,4 +1,4 @@
-class Blob implements Sketch {
+class Blob extends BaseSketch {
   int points = 50; // smoothness
   float radius = 100; // base size
 
@@ -25,8 +25,8 @@ class Blob implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);
-    fill(255);
+    background(processColor(0));
+    fill(processColor(255));
 
     smoothed = smooth(smoothed, audioData.volume * width * 1.75, 0.01);
 

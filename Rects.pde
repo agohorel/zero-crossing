@@ -1,4 +1,4 @@
-class Rects implements Sketch {
+class Rects extends BaseSketch {
   int numRects = getNumRects(); // must be odd so we have a center
   float baseMaxHeightRatio = 1 / float(numRects + 2); // ensure rects don't touch
   float falloff = 0.9;
@@ -8,12 +8,12 @@ class Rects implements Sketch {
 
   void setup() {
     rectMode(CENTER);
-    fill(255);
+    fill(processColor(255));
     noStroke();
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
 
     for (int i = 0; i < numRects; i++) {
       float y = verticalOffset + i * spacing;

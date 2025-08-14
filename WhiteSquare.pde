@@ -1,4 +1,4 @@
-class WhiteSquare implements Sketch {
+class WhiteSquare extends BaseSketch {
   float baseX, baseY;
   float x, y;
   float offset;
@@ -31,7 +31,7 @@ class WhiteSquare implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    fill(0, 20);
+    fill(processColor(0), 20);
     rect(baseX, baseY, width, height);
 
     time = audioData.volSum * 0.125f;
@@ -61,7 +61,7 @@ class WhiteSquare implements Sketch {
     pushMatrix();
     translate(x, y);
     rotate(angle);
-    fill(255);
+    fill(processColor(255));
     rect(0, 0, size, size);
     popMatrix();
   }

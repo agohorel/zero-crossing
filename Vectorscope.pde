@@ -1,4 +1,4 @@
-class Vectorscope implements Sketch {
+class Vectorscope extends BaseSketch {
   float scale = width * 0.67;
   PVector center;
 
@@ -7,13 +7,13 @@ class Vectorscope implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
 
     pushMatrix();
     translate(center.x, center.y);
     rotate(radians(135));
 
-    stroke(20 + audioData.volume * 400);
+    stroke(processColor(20 + audioData.volume * 400));
 
     for (int i = 0; i < audioData.bufferSize; i++) {
       float left = audioData.leftWaveform[i] * scale;

@@ -2,9 +2,9 @@ import java.util.*;
 import java.util.function.Supplier;
 
 class SketchManager {
-  private Sketch currentSketch;
+  private BaseSketch currentSketch;
   private String currentSketchName;
-  private final Map<String, Supplier<Sketch>> sketchRegistry;
+  private final Map<String, Supplier<BaseSketch>> sketchRegistry;
   private final String[] sketchKeys; // all sketch names in an array
   private int currentIndex = -1;     // index of current sketch
 
@@ -27,11 +27,9 @@ class SketchManager {
     sketchRegistry.put("WhiteSquare", WhiteSquare::new);
     sketchRegistry.put("FallingCircles", FallingCircles::new);
     sketchRegistry.put("ZoomingSquares", ZoomingSquares::new);
-
     sketchRegistry.put("Tunnel", Tunnel::new);
     sketchRegistry.put("VectorNetwork", VectorNetwork::new);
     sketchRegistry.put("Blob", Blob::new);
-
     sketchRegistry.put("WaveformGrid", WaveformGrid::new);
     sketchRegistry.put("Ikeda", Ikeda::new);
     sketchRegistry.put("Squares", Squares::new);
@@ -47,7 +45,7 @@ class SketchManager {
       currentSketch.cleanup();
     }
 
-    Supplier<Sketch> sketch = sketchRegistry.get(sketchName);
+    Supplier<BaseSketch> sketch = sketchRegistry.get(sketchName);
     if (sketch != null) {
       currentSketch = sketch.get();
       currentSketch.setup();
@@ -90,7 +88,7 @@ class SketchManager {
   }
 
   private void switchSketch() {
-    // Pick random index that’s NOT the current index
+    // Pick random index that is NOT the current index
     int size = sketchKeys.length;
     if (size <= 1) return;
 

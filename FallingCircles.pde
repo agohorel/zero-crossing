@@ -1,7 +1,7 @@
 final int NUM_CIRCLES = 750;
 Circle[] circles;
 
-class FallingCircles implements Sketch {
+class FallingCircles extends BaseSketch {
   void setup() {
     noStroke();
 
@@ -12,10 +12,10 @@ class FallingCircles implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);  // disable this for trails
+    background(processColor(0));  // disable this for trails
 
     for (Circle c : circles) {
-      c.update(audioData);
+      c.update(audioData, this);
     }
   }
 
@@ -39,7 +39,7 @@ class Circle {
     this.noiseSpeed = random(0.002, 0.01);
   }
 
-  void update(AudioData audioData) {
+  void update(AudioData audioData, BaseSketch sketch) {
     boundsCheck();
 
     float noiseX = noise(noiseOffsetX + audioData.volSum * noiseSpeed);
@@ -53,7 +53,7 @@ class Circle {
     fallingSpeed = 0.125 + audioData.volume * 4;
     y += fallingSpeed + verticalVariation;
 
-    fill(255, map(noiseX, 0, 1, 0, 255) * (0.125 + audioData.volume));
+    fill(sketch.processColor(255), map(noiseX, 0, 1, 0, 255) * (0.125 + audioData.volume));
     ellipse(x, y, radius, radius);
   }
 

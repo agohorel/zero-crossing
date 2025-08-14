@@ -11,7 +11,7 @@ float cellPadding = INITIAL_CELL_PADDING;
 float cellSize;
 
 
-class ZoomingSquares implements Sketch {
+class ZoomingSquares extends BaseSketch {
   PGraphics buffer;
 
   int getMinRuntime() {
@@ -36,12 +36,12 @@ class ZoomingSquares implements Sketch {
     float gridHeight = (ROWS - 1) * gridGap;
 
     buffer.beginDraw();
-    buffer.background(0);
+    buffer.background(processColor(0));
     buffer.resetMatrix();
     buffer.translate(width * 0.5f - gridWidth * 0.5f, height * 0.5f - gridHeight * 0.5f);
 
     buffer.noStroke();
-    buffer.fill(255, audioData.volume * 400);
+    buffer.fill(processColor(255), audioData.volume * 400);
 
     for (int col = 0; col < COLS; col++) {
       for (int row = 0; row < ROWS; row++) {

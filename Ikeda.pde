@@ -1,9 +1,9 @@
-class Ikeda implements Sketch {
+class Ikeda extends BaseSketch {
   void setup() {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
     int waveformPoints = audioData.waveform.length;
     float bandWidth = float(displayWidth) / waveformPoints;
 
@@ -13,7 +13,7 @@ class Ikeda implements Sketch {
       float amp = audioData.leftWaveform[i];
       float brightness = map(amp, 0, 1, 0, 255);
 
-      stroke(brightness);
+      stroke(processColor(brightness));
       line(x, 0, x, height * 0.5);
     }
 
@@ -22,7 +22,7 @@ class Ikeda implements Sketch {
       float amp = audioData.rightWaveform[i];
       float brightness = map(amp, 0, 1, 0, 255);
 
-      stroke(brightness);
+      stroke(processColor(brightness));
       line(x, height * 0.5, x, height);
     }
   }

@@ -15,7 +15,7 @@ class AudioManager {
 
   void setup(PApplet parent) {
     minim = new Minim(parent);
-    in = minim.getLineIn(Minim.STEREO, 1024);
+    in = minim.getLineIn(Minim.STEREO, 512);
     fft = new FFT(in.bufferSize(), in.sampleRate());
     audioData = new AudioData(
       new float[fft.specSize()], // spectrum

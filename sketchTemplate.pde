@@ -1,4 +1,4 @@
-class SomeSketch implements Sketch {
+class SomeSketch extends BaseSketch {
   void setup() {
   }
 

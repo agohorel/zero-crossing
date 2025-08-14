@@ -1,4 +1,4 @@
-class Squares implements Sketch {
+class Squares extends BaseSketch {
   PGraphics buffer;
   float smoothed = 0.2;
 
@@ -8,7 +8,7 @@ class Squares implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
 
     translate(width * 0.5, height * 0.5);
 
@@ -16,7 +16,7 @@ class Squares implements Sketch {
       smoothed = smooth(smoothed, audioData.waveform[i], 0.0025);
       float size = 50 + smoothed * 2 * width;
       rotate(audioData.volSum * 0.0002 * smoothed);
-      stroke(audioData.volume * 20 + audioData.waveform[i] * 300);
+      stroke(processColor(audioData.volume * 20 + audioData.waveform[i] * 300));
       rect(0, 0, size, size);
     }
   }

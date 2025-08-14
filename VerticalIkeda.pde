@@ -1,9 +1,9 @@
-class VerticalIkeda implements Sketch {
+class VerticalIkeda extends BaseSketch {
   void setup() {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
     int waveformPoints = audioData.waveform.length;
 
     float bandHeight = float(height) / waveformPoints;
@@ -14,7 +14,7 @@ class VerticalIkeda implements Sketch {
       float amp = audioData.leftWaveform[i];
       float brightness = map(amp, 0, 1, 0, 255);
 
-      stroke(brightness);
+      stroke(processColor(brightness));
       line(0, y, width * 0.5, y);
     }
 
@@ -24,7 +24,7 @@ class VerticalIkeda implements Sketch {
       float amp = audioData.rightWaveform[i];
       float brightness = map(amp, 0, 1, 0, 255);
 
-      stroke(brightness);
+      stroke(processColor(brightness));
       line(width * 0.5, y, width, y);
     }
   }

@@ -1,4 +1,4 @@
-class WaveformGrid implements Sketch {
+class WaveformGrid extends BaseSketch {
   int gridCols = 128;
   int gridRows = 64;
 
@@ -6,7 +6,7 @@ class WaveformGrid implements Sketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
     noStroke();
     if (audioData.waveform == null) return;
 
@@ -26,7 +26,7 @@ class WaveformGrid implements Sketch {
         float radius = map(amp, 0, 1, cellWidth * 0.1f, cellWidth * 1.0f);
         float brightness = map(amp, 0, 1, 50, 255);
 
-        fill(brightness);
+        fill(processColor(brightness));
         float cx = x * cellWidth + cellWidth * 0.5f;
         float cy = y * cellHeight + cellHeight * 0.5f;
         ellipse(cx, cy, radius, radius);

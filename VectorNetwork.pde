@@ -1,4 +1,4 @@
-class VectorNetwork implements Sketch {
+class VectorNetwork extends BaseSketch {
   class Point {
     PVector pos, vel;
 
@@ -9,7 +9,7 @@ class VectorNetwork implements Sketch {
     }
 
     void update(float speedScale) {
-      stroke(255);
+      stroke(processColor(255));
       PVector delta = PVector.mult(vel, speedScale);
       pos.add(delta);
 
@@ -32,14 +32,14 @@ class VectorNetwork implements Sketch {
     for (int i = 0; i < numPoints; i++) {
       points[i] = new Point();
     }
-    stroke(255);
+    stroke(processColor(255));
     strokeWeight(1);
-    fill(255);
+    fill(processColor(255));
   }
 
   void draw(AudioData audioData) {
     connectionDist = map(audioData.volume, 0, 1, 100, 300);
-    background(0);
+    background(processColor(0));
 
     // Volume scales speed and line opacity (clamped & smoothed as needed)
     float volumeScale = constrain(audioData.volume * 10, 0.5f, 3);
@@ -56,7 +56,7 @@ class VectorNetwork implements Sketch {
         float d = PVector.dist(points[i].pos, points[j].pos);
         if (d < connectionDist) {
           float alpha = map(d, 0, connectionDist, 255, 0) * volumeScale;
-          stroke(255, alpha);
+          stroke(processColor(255), alpha);
           line(points[i].pos.x, points[i].pos.y, points[j].pos.x, points[j].pos.y);
         }
       }
@@ -79,7 +79,7 @@ class VectorNetwork implements Sketch {
             // Alpha fades with distance and volume
             float alpha = map(avgDist, 0, connectionDist, 150, 0) * constrain(audioData.volume * 10, 0, 0.5);
 
-            fill(255, alpha);
+            fill(processColor(255), alpha);
             beginShape();
             vertex(points[i].pos.x, points[i].pos.y);
             vertex(points[j].pos.x, points[j].pos.y);

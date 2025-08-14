@@ -1,14 +1,14 @@
-class Tunnel implements Sketch {
+class Tunnel extends BaseSketch {
   int numCircles = 50;
   int buffer = 250;
 
   void setup() {
     noFill();
-    stroke(255);
+    stroke(processColor(255));
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
 
     float centerX = width * 0.5;
     float centerY = height * 0.5;
