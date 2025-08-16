@@ -4,7 +4,7 @@ interface Sketch {
   void cleanup();
 
   default int getMinRuntime() {
-    return 2000;
+    return 3000;
   }
 }
 

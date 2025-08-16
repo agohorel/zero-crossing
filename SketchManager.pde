@@ -10,8 +10,8 @@ class SketchManager {
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
-  private float jumpSensitivity = 2.75f;
-  private float minJumpMagnitude = 0.075f;  // abs vol change must be greater than this to switch
+  private float jumpSensitivity = 2.95f;
+  private float minJumpMagnitude = 0.1f;  // abs vol change must be greater than this to switch
 
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
   private int volumeHistoryIndex = 0;
