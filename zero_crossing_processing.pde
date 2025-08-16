@@ -26,7 +26,8 @@ void keyPressed() {
   // if (key == '1') sketches.activateSketch("Vectorscope");
   // if (key == '1') sketches.activateSketch("Rects");
   // if (key == '1') sketches.activateSketch("Spectrum");
-  if (key == '1') sketches.activateSketch("CircularWaveform");
+  // if (key == '1') sketches.activateSketch("CircularWaveform");
+  if (key == '1') sketches.activateSketch("VectorscopeLines");
   if (key == '2') sketches.activateSketch("FallingCircles");
   if (key == '3') sketches.activateSketch("ZoomingSquares");
   if (key == '4') sketches.activateSketch("Ikeda");
