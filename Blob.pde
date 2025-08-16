@@ -28,7 +28,7 @@ class Blob extends BaseSketch {
     background(processColor(0));
     fill(processColor(255));
 
-    smoothed = smooth(smoothed, audioData.volume * width * 1.75, 0.01);
+    smoothed = smooth(smoothed, audioData.volume * width, 0.01);
 
     float xOsc = oscillate(audioData.volSum * 0.1, -xOscRange, xOscRange);
     float yOsc = oscillate(audioData.volSum * 0.03, -yOscRange, yOscRange);
@@ -39,7 +39,7 @@ class Blob extends BaseSketch {
 
   void drawBlob(float baseRadius, AudioData audioData) {
     beginShape();
-    float speed = audioData.volSum * 0.25;
+    float speed = audioData.volSum * 0.2;
     for (int i = 0; i < points; i++) {
       float xOff = cosTable[i];
       float yOff = sinTable[i];
@@ -49,7 +49,7 @@ class Blob extends BaseSketch {
         yOff * noiseScale + speed);
 
       // map noise to a radius offset, modulated by audio
-      float radius = baseRadius + map(noiseVal, 0, 1, -20, 20) * (1 + audioData.volume * 20);
+      float radius = baseRadius + map(noiseVal, 0, 1, -30, 10) * (1 + audioData.volume * 5);
 
       float x = width * 0.5f + radius * xOff;
       float y = height * 0.5f + radius * yOff;
