@@ -8,7 +8,7 @@ class SpectralCircles extends BaseSketch {
   }
 
   void draw(AudioData audioData) {
-    fill(processColor(0), 15 + audioData.volume * 255);
+    fill(processColor(0));
     rect(0, 0, width, height);
 
     noFill();
