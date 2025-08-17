@@ -7,14 +7,15 @@ class PhasedWaveforms extends BaseSketch {
   }
 
   void draw(AudioData audioData) {
-    background(0);
+    background(processColor(0));
     noFill();
 
     translate(0, height/2);
 
     for (int c = 0; c < numCopies; c++) {
       float offset = c * delay;
-      stroke(lerpColor(color(127), color(255), c/(float)numCopies));
+      float col = 255 / (c+1);
+      stroke(processColor(col));
 
       beginShape();
       for (int i = 0; i < audioData.waveform.length; i++) {
