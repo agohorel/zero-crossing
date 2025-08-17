@@ -41,6 +41,8 @@ class SketchManager {
     sketchRegistry.put("CircularWaveform", CircularWaveform::new);
     sketchRegistry.put("VectorscopeLines", VectorscopeLines::new);
     sketchRegistry.put("PhasedWaveforms", PhasedWaveforms::new);
+    sketchRegistry.put("WaveformPointCloud", WaveformPointCloud::new);
+    sketchRegistry.put("SpectrumPointCloud", SpectrumPointCloud::new);
   }
 
   void activateSketch(String sketchName) {

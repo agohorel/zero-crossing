@@ -28,8 +28,10 @@ void keyPressed() {
   // if (key == '1') sketches.activateSketch("Spectrum");
   // if (key == '1') sketches.activateSketch("CircularWaveform");
   // if (key == '1') sketches.activateSketch("VectorscopeLines");
-  if (key == '1') sketches.activateSketch("PhasedWaveforms");
-  if (key == '2') sketches.activateSketch("FallingCircles");
+  // if (key == '1') sketches.activateSketch("PhasedWaveforms");
+  if (key == '1') sketches.activateSketch("WaveformPointCloud");
+  if (key == '2') sketches.activateSketch("SpectrumPointCloud");
+  // if (key == '2') sketches.activateSketch("FallingCircles");
   if (key == '3') sketches.activateSketch("ZoomingSquares");
   if (key == '4') sketches.activateSketch("Ikeda");
   if (key == '5') sketches.activateSketch("VectorNetwork");
