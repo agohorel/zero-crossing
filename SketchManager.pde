@@ -40,6 +40,7 @@ class SketchManager {
     sketchRegistry.put("Spectrum", Spectrum::new);
     sketchRegistry.put("CircularWaveform", CircularWaveform::new);
     sketchRegistry.put("VectorscopeLines", VectorscopeLines::new);
+    sketchRegistry.put("PhasedWaveforms", PhasedWaveforms::new);
   }
 
   void activateSketch(String sketchName) {
