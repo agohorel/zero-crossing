@@ -10,14 +10,19 @@ interface Sketch {
 
 public abstract class BaseSketch implements Sketch {
   boolean invertColors;
-  private float INVERT_CHANCE = 0.2;
-  private float INVERT_DARKNESS_EXAGGERATION = 1.5;
+  private final float INVERT_CHANCE = 1.0;
+  private final float GAMMA = 2.0f;  // >1 darkens midtones
+
 
   BaseSketch() {
     invertColors = random(1) < INVERT_CHANCE;
   }
 
   float processColor(float c) {
-    return invertColors ? constrain(255 - (c * INVERT_DARKNESS_EXAGGERATION), 0, 255) : c;
+    if (!invertColors) return c;
+
+    float normalized = c / 255.0f;
+    float adjusted = pow(1.0f - normalized, GAMMA);
+    return adjusted * 255.0f;
   }
 }
