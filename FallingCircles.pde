@@ -1,7 +1,9 @@
-final int NUM_CIRCLES = 750;
-Circle[] circles;
 
 class FallingCircles extends BaseSketch {
+  final int NUM_CIRCLES = 750;
+  Circle[] circles;
+  final boolean shouldBlur = random(1) < 0.5;
+
   void setup() {
     noStroke();
 
@@ -12,7 +14,12 @@ class FallingCircles extends BaseSketch {
   }
 
   void draw(AudioData audioData) {
-    background(processColor(0));  // disable this for trails
+    if (shouldBlur) {
+      fill(processColor(0), 5);
+      rect(0, 0, width, height);
+    } else {
+      background(processColor(0));
+    }
 
     for (Circle c : circles) {
       c.update(audioData, this);
