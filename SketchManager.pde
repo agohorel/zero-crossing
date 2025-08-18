@@ -10,8 +10,8 @@ class SketchManager {
 
   // Auto-switch config
   private static final int VOLUME_HISTORY_SIZE = 10;
-  private float jumpSensitivity = 2.95f;
-  private float minJumpMagnitude = 0.1f;  // abs vol change must be greater than this to switch
+  private float jumpSensitivity = 2.5f;
+  private float minJumpMagnitude = 0.075f;  // abs vol change must be greater than this to switch
 
   private final float[] volumeHistory = new float[VOLUME_HISTORY_SIZE];
   private int volumeHistoryIndex = 0;
@@ -95,10 +95,9 @@ class SketchManager {
   private void switchSketch() {
     // Pick random index that is NOT the current index
     int size = sketchKeys.length;
-    if (size <= 1) return;
 
     int newIndex = (int) random(size - 1);
-    if (newIndex >= currentIndex) {
+    if (newIndex == currentIndex) {
       newIndex++;
     }
 
