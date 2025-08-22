@@ -11,7 +11,7 @@ interface Sketch {
 public abstract class BaseSketch implements Sketch {
   boolean invertColors;
   private final float INVERT_CHANCE = 0.2;
-  private final float GAMMA = 2.0f;  // >1 darkens midtones
+  private final float GAMMA = 4.0f;  // >1 darkens midtones
 
 
   BaseSketch() {
