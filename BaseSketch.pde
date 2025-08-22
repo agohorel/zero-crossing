@@ -25,4 +25,8 @@ public abstract class BaseSketch implements Sketch {
     float adjusted = pow(1.0f - normalized, GAMMA);
     return adjusted * 255.0f;
   }
+
+  void setInvertFlag(boolean shouldInvert) {
+    invertColors = shouldInvert;
+  }
 }

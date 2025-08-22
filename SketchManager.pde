@@ -17,6 +17,8 @@ class SketchManager {
   private int volumeHistoryIndex = 0;
   private int currentSketchStartTime = 0;
 
+  private boolean wasLastSketchInverted = true; // start true so 1st sketch is always not inverted - see behavior below
+
   SketchManager() {
     sketchRegistry = new LinkedHashMap<>();
     registerSketches();
@@ -55,6 +57,12 @@ class SketchManager {
       currentSketch = sketch.get();
       currentSketch.setup();
       currentSketchStartTime = millis();
+
+      // make sure invert never happens twice in a row
+      if (wasLastSketchInverted == true) {
+        currentSketch.setInvertFlag(false);
+      }
+      wasLastSketchInverted = currentSketch.invertColors;
 
       currentSketchName = sketchName;
       // update index
