@@ -1,4 +1,3 @@
-
 class FallingCircles extends BaseSketch {
   final int NUM_CIRCLES = 750;
   Circle[] circles;
@@ -6,7 +5,6 @@ class FallingCircles extends BaseSketch {
 
   void setup() {
     noStroke();
-
     circles = new Circle[NUM_CIRCLES];
     for (int i = 0; i < NUM_CIRCLES; i++) {
       circles[i] = new Circle();
@@ -32,35 +30,49 @@ class FallingCircles extends BaseSketch {
 
 class Circle {
   float x, y, radius;
-  float fallingSpeed;
+  float baseFallingSpeed, fallingRate;
   float noiseOffsetX, noiseOffsetY, noiseSpeed;
+
+  final int MIN_SIZE = 5;
+  final int MAX_SIZE = 50;
 
   Circle() {
     this.x = getRandomX();
     this.y = getRandomY();
     this.radius = getRandomSize();
 
-    this.fallingSpeed = random(0.5, 1.5);
-    this.noiseOffsetX = random(1000);
-    this.noiseOffsetY = random(2000);
-    this.noiseSpeed = random(0.002, 0.01);
+    baseFallingSpeed = map(radius, MIN_SIZE, MAX_SIZE, 0.2, 2.0);
+    fallingRate = map(radius, MIN_SIZE, MAX_SIZE, 1.0, 3.0);
+
+    noiseOffsetX = random(1000);
+    noiseOffsetY = random(2000);
+    noiseSpeed = random(0.002, 0.01);
   }
 
   void update(AudioData audioData, BaseSketch sketch) {
     boundsCheck();
 
-    float noiseX = noise(noiseOffsetX + audioData.volSum * noiseSpeed);
-    float horizontalDrift = map(noiseX, 0, 1, -1.5, 1.5);
-    x += horizontalDrift;
 
-    x += sin(audioData.volSum * 0.01 + noiseOffsetX) * 0.3;
-
+    float audioFactorV = map(radius, MIN_SIZE, MAX_SIZE, 1.0, 2.0); // scale audio effect by radius
+    float verticalSpeed = baseFallingSpeed + audioData.volume * fallingRate * audioFactorV;
     float noiseY = noise(noiseOffsetY + audioData.volSum * noiseSpeed);
     float verticalVariation = map(noiseY, 0, 1, -0.3, 0.3);
-    fallingSpeed = 0.125 + audioData.volume * 4;
-    y += fallingSpeed + verticalVariation;
+    y += verticalSpeed + verticalVariation;
 
-    fill(sketch.processColor(255), map(noiseX, 0, 1, 0, 255) * (0.125 + audioData.volume));
+
+    float noiseX = noise(noiseOffsetX + audioData.volSum * noiseSpeed);
+    float baseDrift = map(radius, MIN_SIZE, MAX_SIZE, 0.2, 2.0);
+    float horizontalDrift = map(noiseX, 0, 1, -baseDrift, baseDrift);
+
+
+    float audioFactorH = map(radius, MIN_SIZE, MAX_SIZE, 0.5, 1.0);
+    horizontalDrift += sin(audioData.volSum * 0.05 + noiseOffsetX) * 2.0 * audioFactorH;
+
+    x += horizontalDrift;
+
+
+    float alpha = map(radius, MIN_SIZE, MAX_SIZE, 50, 255);
+    fill(sketch.processColor(255), alpha);
     ellipse(x, y, radius, radius);
   }
 
@@ -80,12 +92,10 @@ class Circle {
   float getRandomX() {
     return random(0, width);
   }
-
   float getRandomY() {
     return random(0, height);
   }
-
   float getRandomSize() {
-    return random(5, 50);
+    return random(MIN_SIZE, MAX_SIZE);
   }
 }
