@@ -101,17 +101,17 @@ class SketchManager {
   }
 
   private void switchSketch() {
-    // Pick random index that is NOT the current index
     int size = sketchKeys.length;
 
     int newIndex = (int) random(size - 1);
-    if (newIndex == currentIndex) {
+    if (newIndex >= currentIndex) {
       newIndex++;
     }
 
     String nextKey = sketchKeys[newIndex];
     activateSketch(nextKey);
   }
+
 
   private boolean detectJump(float currentVolume, float historyMean, float sensitivity) {
     float varianceSum = 0;
