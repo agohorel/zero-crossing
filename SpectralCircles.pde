@@ -3,7 +3,6 @@ class SpectralCircles extends BaseSketch {
   final float middleY = height * 0.5;
 
   void setup() {
-    ellipseMode(CENTER);
     background(processColor(0));
   }
 

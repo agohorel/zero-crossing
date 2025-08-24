@@ -4,10 +4,6 @@ class Eraser extends BaseSketch {
   String[] directions = {"vertical", "horizontal"};
   String direction;
 
-  int getMinRuntime() {
-    // return 100000;
-  }
-
   void setup() {
     rectMode(CENTER);
     direction = directions[int(random(directions.length))];

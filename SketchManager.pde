@@ -46,6 +46,7 @@ class SketchManager {
     sketchRegistry.put("WaveformPointCloud", WaveformPointCloud::new);
     sketchRegistry.put("SpectrumPointCloud", SpectrumPointCloud::new);
     sketchRegistry.put("Eraser", Eraser::new);
+    sketchRegistry.put("CircularEraser", CircularEraser::new);
   }
 
   void activateSketch(String sketchName) {
