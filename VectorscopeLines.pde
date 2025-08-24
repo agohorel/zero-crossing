@@ -1,7 +1,7 @@
 class VectorscopeLines extends BaseSketch {
   float scale = height * 0.67;
 
-  boolean shouldFill = random(1) < 0.5;
+  boolean shouldFill = random(1) < 0.25;
   PVector center;
 
 
@@ -34,7 +34,6 @@ class VectorscopeLines extends BaseSketch {
       float right = audioData.rightWaveform[i] * dynamicScale;
 
       vertex(left, right);
-      vertex(right, left);
     }
     endShape(CLOSE);
 
