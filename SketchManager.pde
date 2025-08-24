@@ -47,6 +47,7 @@ class SketchManager {
     sketchRegistry.put("SpectrumPointCloud", SpectrumPointCloud::new);
     sketchRegistry.put("Eraser", Eraser::new);
     sketchRegistry.put("CircularEraser", CircularEraser::new);
+    sketchRegistry.put("FallingSquares", FallingSquares::new);
   }
 
   void activateSketch(String sketchName) {

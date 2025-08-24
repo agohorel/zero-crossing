@@ -31,7 +31,8 @@ void keyPressed() {
   // if (key == '1') sketches.activateSketch("PhasedWaveforms");
   // if (key == '1') sketches.activateSketch("WaveformPointCloud");
   // if (key == '1') sketches.activateSketch("Eraser");
-  if (key == '1') sketches.activateSketch("CircularEraser");
+  // if (key == '1') sketches.activateSketch("CircularEraser");
+  if (key == '1') sketches.activateSketch("FallingSquares");
   if (key == '2') sketches.activateSketch("SpectrumPointCloud");
   // if (key == '2') sketches.activateSketch("FallingCircles");
   if (key == '3') sketches.activateSketch("ZoomingSquares");
