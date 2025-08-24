@@ -101,14 +101,10 @@ class SketchManager {
   }
 
   private void switchSketch() {
-    int size = sketchKeys.length;
-
-    int newIndex = (int) random(size - 1);
-    if (newIndex >= currentIndex) {
-      newIndex++;
-    }
-
-    String nextKey = sketchKeys[newIndex];
+    List<String> keys = new ArrayList<>(Arrays.asList(sketchKeys));
+    keys.remove(currentIndex);  // remove current sketch
+    Collections.shuffle(keys);
+    String nextKey = keys.get(0);
     activateSketch(nextKey);
   }
 
