@@ -2,6 +2,7 @@ class Rects extends BaseSketch {
   int numRects = getNumRects(); // must be odd so we have a center
   float baseMaxHeightRatio = 1 / float(numRects + 2); // ensure rects don't touch
   float falloff = 0.9;
+  float[] smoothedHeights;
 
   float spacing = height / (numRects + 1);
   float verticalOffset = (height - (spacing * (numRects - 1))) / 2;
@@ -10,6 +11,7 @@ class Rects extends BaseSketch {
     rectMode(CENTER);
     fill(processColor(255));
     noStroke();
+    smoothedHeights = new float[numRects];
   }
 
   void draw(AudioData audioData) {
@@ -26,7 +28,8 @@ class Rects extends BaseSketch {
       float fillPercent = abs(sin(loopPhase)) * audioLevel;
 
       float h = maxHeight * fillPercent;
-      rect(width * 0.5, y, width, h);
+      smoothedHeights[i] = smooth(smoothedHeights[i], h, 0.9);
+      rect(width * 0.5, y, width, smoothedHeights[i]);
     }
   }
 
