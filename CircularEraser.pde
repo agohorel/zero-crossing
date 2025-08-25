@@ -8,7 +8,7 @@ class CircularEraser extends BaseSketch {
   void draw(AudioData audioData) {
     background(processColor(255));
     fill(processColor(0));
-    size = oscillate(audioData.volSum * 0.1, 0, width);
+    size = oscillate(audioData.volSum * 0.1, 0, width * 1.25);
     smoothedSize = smooth(smoothedSize, size, 0.9);
     ellipse(width * 0.5, height * 0.5, smoothedSize, smoothedSize);
   }
