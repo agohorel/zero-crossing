@@ -1,5 +1,4 @@
 class Squares extends BaseSketch {
-  PGraphics buffer;
   float smoothed = 0.2;
 
   void setup() {
