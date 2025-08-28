@@ -2,6 +2,7 @@ import java.util.ArrayList;
 
 public class SpectrumPointCloud extends BaseSketch {
   private ArrayList<Point> points;
+
   private final float AMPLITUDE_SCALE = 0.5f; // fraction of width/height
   private int direction;
   // 0 = right → left
@@ -36,7 +37,7 @@ public class SpectrumPointCloud extends BaseSketch {
         y -= speed;
         break;
       }
-      alpha *= 0.99;
+      alpha *= 0.97;
     }
 
     boolean isDead() {
@@ -62,7 +63,7 @@ public class SpectrumPointCloud extends BaseSketch {
   }
 
   public void draw(AudioData audioData) {
-    for (int i = 0; i < audioData.spectrum.length; i += 4) {
+    for (int i = 0; i < audioData.spectrum.length; i += 8) {
       float x = 0, y = 0;
 
       switch (direction) {
@@ -99,7 +100,7 @@ public class SpectrumPointCloud extends BaseSketch {
       Point p = points.get(i);
       fill(processColor(255), p.alpha);
       ellipse(p.x, p.y, p.size, p.size);
-      p.update(1 + audioData.volume * 15);
+      p.update(4 + audioData.volume * 20);
       if (p.isDead()) {
         points.remove(i);
       }

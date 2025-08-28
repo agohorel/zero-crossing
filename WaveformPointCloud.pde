@@ -36,7 +36,7 @@ public class WaveformPointCloud extends BaseSketch {
         y -= speed;
         break; // bottom to top
       }
-      alpha *= 0.99;
+      alpha *= 0.97;
     }
 
     boolean isDead() {
@@ -62,7 +62,7 @@ public class WaveformPointCloud extends BaseSketch {
   }
 
   public void draw(AudioData audioData) {
-    for (int i = 0; i < audioData.waveform.length; i += 4) {
+    for (int i = 0; i < audioData.waveform.length; i += 8) {
       float x = 0, y = 0;
       switch (direction) {
       case 0: // right → left
@@ -95,7 +95,7 @@ public class WaveformPointCloud extends BaseSketch {
       Point p = points.get(i);
       fill(processColor(255), p.alpha);
       ellipse(p.x, p.y, p.size, p.size);
-      p.update(1 + audioData.volume * 15);
+      p.update(4 + audioData.volume * 20);
       if (p.isDead()) {
         points.remove(i);
       }
